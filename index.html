@@ -233,11 +233,13 @@ video.vid{width:100%;border-radius:12px;background:#000}
 <div id="toast"></div>
 
 <!-- ═══ Firebase SDK از CDN جایگزین + fallback ═══ -->
-<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script>if(typeof firebase==='undefined')document.write('<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"><\/script>')</script>
 <script>if(typeof firebase==='undefined')document.write('<script src="https://unpkg.com/firebase@10.12.2/firebase-app-compat.js"><\/script>')</script>
-<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"></script>
-<script>if(typeof firebase==='undefined'||!firebase.firestore)document.write('<script src="https://unpkg.com/firebase@10.12.2/firebase-firestore-compat.js"><\/script>')</script>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>if(typeof firebase==='undefined'||!firebase.firestore)document.write('<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"><\/script>')</script>
+<script>if(typeof firebase==='undefined'||!firebase.firestore)document.write('<script src="https://unpkg.com/firebase@10.12.2/firebase-firestore-compat.js"><\/script>')</script>
 <script>
 'use strict';
 /* ═══════════════════ تنظیمات ═══════════════════ */
@@ -374,10 +376,10 @@ function renderLogin(next){
       '<div class="hero-logo"><span class="tick big">√</span><h1>آزمونک</h1></div>'+
       '<p class="tag">پلتفرم آزمون‌های خصوصی ریاضی</p>'+
       '<ul class="feats">'+
-        '<li class="fade-up" style="animation-delay:.05s">⏱ تایمر دقیق، بالای صفحهٔ آزمون</li>'+
-        '<li class="fade-up" style="animation-delay:.15s">🖼 سؤالات تصویری، چهار گزینه‌ای</li>'+
-        '<li class="fade-up" style="animation-delay:.25s">📊 کارنامه و درصدِ آنی بعد از ثبت</li>'+
-        '<li class="fade-up" style="animation-delay:.35s">🎬 پاسخ ویدئویی و کلید بعد از آزمون</li>'+
+        '<li class="fade-up">⏱ تایمر دقیق، بالای صفحهٔ آزمون</li>'+
+        '<li class="fade-up" style="animation-delay:.1s">🖼 سؤالات تصویری، چهار گزینه‌ای</li>'+
+        '<li class="fade-up" style="animation-delay:.2s">📊 کارنامه و درصدِ آنی بعد از ثبت</li>'+
+        '<li class="fade-up" style="animation-delay:.3s">🎬 پاسخ ویدئویی و کلید بعد از آزمون</li>'+
       '</ul>'+
     '</div>'+
     '<form class="card login-card fade-up" id="loginForm" style="animation-delay:.15s">'+
@@ -385,9 +387,30 @@ function renderLogin(next){
       '<label class="lbl">نام کاربری</label><input class="inp" id="lu" dir="ltr" autocomplete="username" required>'+
       '<label class="lbl">رمز عبور</label><input class="inp" id="lp" dir="ltr" type="password" autocomplete="current-password" required>'+
       '<button class="btn btn-primary big full" id="loginBtn">ورود</button>'+
+      '<button type="button" class="btn btn-ghost btn-sm full" id="testBtn" style="margin-top:10px">🔌 تست اتصال به سرور</button>'+
       '<p class="hint">حساب دانش‌آموزی فقط توسط مدیر ساخته می‌شود.</p>'+
     '</form>'+
   '</div>';
+
+  $('#testBtn').onclick=async()=>{
+    const btn=$('#testBtn');btn.disabled=true;btn.textContent='🔄 در حال تست…';
+    try{
+      if(typeof firebase==='undefined'){toast('Firebase لود نشده — صفحه را رفرش کن','err');return;}
+      if(!db){toast('db null است — رفرش کن','err');return;}
+      await db.collection('settings').doc('_ping').get();
+      toast('✅ اتصال به Firestore برقرار است');
+    }catch(err){
+      console.error('TEST ERR:',err);
+      const msg=(err&&err.message)?err.message:String(err);
+      const m=openModal('<h3 class="disp">❌ خطای اتصال</h3>'+
+        '<p class="m-msg">جزئیات خطا (این را برایم بفرست):</p>'+
+        '<pre class="creds" style="max-height:200px;overflow:auto;font-size:11px">'+esc(msg)+'</pre>'+
+        '<p class="hint">🔎 راهنما: اگر پیام <b>Missing or insufficient permissions</b> است → قوانین Firestore را باز کن. اگر <b>network</b> است → فیلترشکن را روشن کن.</p>'+
+        '<div class="m-actions"><button class="btn btn-primary" id="c">بستن</button></div>');
+      m.querySelector('#c').onclick=closeModal;
+    }finally{btn.disabled=false;btn.textContent='🔌 تست اتصال به سرور';}
+  };
+
   $('#loginForm').onsubmit=async e=>{
     e.preventDefault();
     const btn=$('#loginBtn'),u=$('#lu').value.trim().toLowerCase(),p=$('#lp').value;
@@ -411,11 +434,20 @@ function renderLogin(next){
         }
         if(!ok)toast('نام کاربری یا رمز اشتباه است','err');
       }
-    }catch(err){console.error(err);toast('خطا در اتصال — اینترنت را چک کن','err');}
+    }catch(err){
+      console.error('LOGIN ERR:',err);
+      const msg=(err&&err.message)?err.message:String(err);
+      if(msg.includes('permission')||msg.includes('PERMISSION')){
+        toast('🔒 قوانین Firestore بسته است — برو به کنسول Firebase و Rules را باز کن','err');
+      }else if(msg.includes('network')||msg.includes('timeout')||msg.includes('Failed to fetch')){
+        toast('🔌 Firebase در ایران گاهی فیلتر است — فیلترشکن را روشن کن','err');
+      }else{
+        toast('خطا: '+msg.slice(0,80),'err');
+      }
+    }
     btn.disabled=false;btn.textContent='ورود';
   };
 }
-
 /* ── پوسته‌ها ── */
 function studentTop(){
   return '<header class="topbar"><div class="inner">'+
