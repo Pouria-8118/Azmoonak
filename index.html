@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1c2b5e">
+<title>آزمونک | پلتفرم آزمون خصوصی ریاضی</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23d92c45'/%3E%3Cpath d='M16 34l10 12 22-28' stroke='%23fff' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<!-- ═══ فونت‌ها از CDN جایگزین (بدون گوگل) ═══ -->
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+<style>
+@font-face{
+  font-family:'Lalezar';
+  src:url('https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/lalezar/Lalezar-Regular.ttf') format('truetype');
+  font-display:swap;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#f6f3ea;--grid:rgba(43,72,140,.075);
+  --ink:#1c2b5e;--ink-2:#33427e;--line:#ddd6c4;
+  --pen:#d92c45;--pen-soft:#fdeef0;
+  --ok:#178f56;--ok-soft:#e4f5ec;--amber:#d98a10;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Vazirmatn',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;color:var(--ink);min-height:100vh;
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;
+}
+.margin-line{position:fixed;top:0;bottom:0;right:34px;width:2px;background:rgba(217,44,69,.16);pointer-events:none;z-index:0}
+#bg-syms{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+#bg-syms span{position:absolute;font-family:Lalezar,color;color:var(--ink);opacity:.05;animation:floaty 9s ease-in-out infinite alternate}
+@keyframes floaty{from{transform:translateY(-14px) rotate(-6deg)}to{transform:translateY(16px) rotate(7deg)}}
+#app{position:relative;z-index:1}
+a{color:var(--ink-2)}
+.disp{font-family:'Lalezar','Vazirmatn',system-ui,sans-serif;font-weight:400}
+.wrap{max-width:1100px;margin:0 auto;padding:26px 18px}
+.wrap.narrow{max-width:780px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 1px 2px rgba(30,40,80,.05),0 12px 30px -20px rgba(30,40,80,.3)}
+.pad{padding:22px}
+.center{text-align:center}
+.fade-up{animation:fadeUp .5s cubic-bezier(.2,.7,.3,1) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.btn{font-family:inherit;font-size:15px;font-weight:700;border:none;cursor:pointer;border-radius:11px;padding:11px 20px;transition:.18s;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+.btn-primary{background:var(--ink);color:#fff}
+.btn-primary:hover{background:var(--ink-2);transform:translateY(-2px);box-shadow:0 10px 20px -8px rgba(28,43,94,.5)}
+.btn-ghost{background:#fff;border:1.5px solid var(--ink);color:var(--ink)}
+.btn-ghost:hover{background:rgba(28,43,94,.07);transform:translateY(-1px)}
+.btn-danger{background:var(--pen);color:#fff}
+.btn-danger:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-danger-o{background:var(--pen-soft);color:var(--pen)}
+.btn-danger-o:hover{background:#f9d7dd}
+.btn-outline-inv{background:transparent;border:1.5px solid rgba(255,255,255,.55);color:#fff}
+.btn-outline-inv:hover{background:rgba(255,255,255,.14)}
+.btn-pen{background:var(--pen);color:#fff}
+.btn-pen:hover{filter:brightness(1.08);transform:translateY(-2px)}
+.btn-sm{padding:6px 12px;font-size:13px;border-radius:9px}
+.btn.big{font-size:17px;padding:14px 30px}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none!important}
+.btn.full{width:100%}
+.inp{width:100%;font-family:inherit;font-size:15px;padding:11px 14px;border:1.5px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);transition:.15s}
+.inp:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(28,43,94,.13)}
+.lbl{display:block;font-size:13px;font-weight:800;margin:12px 0 6px;color:var(--ink-2)}
+.hint{font-size:12.5px;color:#8a8fa6;margin-top:8px;line-height:1.9}
+.topbar{position:sticky;top:0;z-index:50;background:var(--ink);color:#fff;box-shadow:0 2px 16px rgba(20,30,70,.28)}
+.topbar .inner{max-width:1100px;margin:auto;display:flex;align-items:center;gap:12px;padding:10px 18px;flex-wrap:wrap}
+.logo{font-family:'Lalezar','Vazirmatn',sans-serif;font-size:25px;display:flex;align-items:center;gap:9px;color:#fff;text-decoration:none}
+.logo .tick,.tick{background:var(--pen);color:#fff;border-radius:9px;display:grid;place-items:center;font-weight:800;transform:rotate(-7deg)}
+.logo .tick{width:27px;height:27px;font-size:16px}
+.tick.big{width:56px;height:56px;border-radius:16px;font-size:32px;box-shadow:0 12px 26px -10px rgba(217,44,69,.65)}
+.spacer{flex:1}
+.who{font-size:14px;font-weight:600;opacity:.92}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{color:rgba(255,255,255,.75);text-decoration:none;padding:7px 13px;border-radius:10px;font-size:14px;font-weight:700;transition:.15s}
+.tab:hover{background:rgba(255,255,255,.13);color:#fff}
+.tab.active{background:var(--pen);color:#fff}
+.login-page{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr;gap:36px;max-width:1050px;margin:0 auto;padding:48px 22px;align-items:center}
+@media(max-width:860px){.login-page{grid-template-columns:1fr;padding-top:56px}}
+.login-hero h1{font-family:'Lalezar','Vazirmatn',sans-serif;font-size:78px;line-height:1}
+.hero-logo{display:flex;align-items:center;gap:16px}
+.tag{font-size:18px;color:var(--ink-2);margin:12px 0 24px;font-weight:500}
+.feats{list-style:none;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.feats li{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 16px;font-weight:700;font-size:14px;box-shadow:0 3px 12px -8px rgba(30,40,80,.35)}
+.login-card{padding:32px}
+.login-card h2{font-size:30px;margin-bottom:6px}
+.exambar{position:sticky;top:0;z-index:40;background:var(--ink);color:#fff;padding:10px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;box-shadow:0 4px 18px rgba(20,30,70,.32)}
+.exambar .tinfo{display:flex;flex-direction:column;gap:2px;min-width:150px}
+.exambar .tinfo b{font-family:'Lalezar','Vazirmatn',sans-serif;font-size:19px;font-weight:400}
+.exambar .tinfo span{font-size:12px;opacity:.75}
+.exambar .tmr{display:flex;align-items:center;gap:10px}
+.lbl2{font-size:12px;opacity:.8}
+.timerbox{font-family:'Lalezar','Vazirmatn',sans-serif;font-size:28px;background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.4);border-radius:12px;padding:1px 16px;min-width:104px;text-align:center;font-variant-numeric:tabular-nums}
+.timerbox.low{background:var(--pen);border-color:var(--pen);animation:pulse 1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 9px rgba(217,44,69,.22)}}
+.exambar .ans{font-size:13px;opacity:.9}
+.timebar{height:4px;background:rgba(28,43,94,.15)}
+.timebar i{display:block;height:100%;background:var(--pen);transition:width .25s linear}
+.q-card{padding:20px;margin-bottom:18px}
+.q-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.q-num{font-family:'Lalezar','Vazirmatn',sans-serif;font-size:19px;background:var(--ink);color:#fff;padding:2px 16px;border-radius:10px}
+.qimg{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:6px;cursor:zoom-in;margin-bottom:14px;display:block}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:620px){.opts{grid-template-columns:1fr}}
+.opt{display:flex;align-items:center;gap:12px;border:2px solid var(--line);border-radius:12px;padding:10px 14px;background:#fff;cursor:pointer;transition:.16s;font-weight:700;font-size:15px;text-align:right;font-family:inherit}
+.opt:hover{border-color:var(--ink-2);transform:translateY(-1px)}
+.opt .n{width:34px;height:34px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font-family:'Lalezar','Vazirmatn',sans-serif;font-size:18px;transition:.16s;flex:none}
+.opt.sel{border-color:var(--ink);background:rgba(28,43,94,.07)}
+.opt.sel .n{background:var(--ink);color:#fff;animation:pop .25s}
+@keyframes pop{50%{transform:scale(1.28)}}
+.opt.ro{cursor:default}
+.opt.good{border-color:var(--ok);background:var(--ok-soft)}
+.opt.good .n{border-color:var(--ok);background:var(--ok);color:#fff}
+.opt.bad{border-color:var(--pen);background:var(--pen-soft)}
+.opt.bad .n{border-color:var(--pen);background:var(--pen);color:#fff}
+.tag{margin-right:auto;font-size:12px;font-weight:800;padding:3px 10px;border-radius:99px}
+.t-ok{background:var(--ok-soft);color:var(--ok)}
+.t-bad{background:var(--pen-soft);color:var(--pen)}
+.exam-hint{background:#fdf6e7;border:1px dashed var(--amber);border-radius:12px;padding:10px 16px;font-size:13.5px;margin-bottom:18px}
+.result-head{display:flex;gap:26px;align-items:center;flex-wrap:wrap;margin-top:26px}
+.gauge{position:relative;width:170px;height:170px;flex:none}
+.gauge svg{transform:rotate(-90deg)}
+.gauge .val{position:absolute;inset:0;display:grid;place-items:center;font-family:'Lalezar','Vazirmatn',sans-serif;font-size:44px}
+.r-text{flex:1;min-width:230px}
+.r-msg{margin:10px 0 14px;font-weight:600;color:var(--ink-2)}
+.r-stats{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;padding:4px 13px;border-radius:99px;font-size:13px;font-weight:800}
+.chip.g{background:var(--ok-soft);color:var(--ok)}
+.chip.r{background:var(--pen-soft);color:var(--pen)}
+.chip.y{background:#fdf3e0;color:var(--amber)}
+.chip.b{background:#eef0f6;color:#5a637c}
+.sec-title{font-size:26px;margin:26px 0 12px}
+.video-wrap{position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+video.vid{width:100%;border-radius:12px;background:#000}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:22px 0 14px;flex-wrap:wrap}
+.toolbar h2{font-size:27px}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:6px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
+.stat b{font-family:'Lalezar','Vazirmatn',sans-serif;font-size:32px;display:block;font-weight:400}
+.stat span{font-size:13px;color:var(--ink-2);font-weight:600}
+.exam-row{display:flex;gap:18px;padding:18px;margin-bottom:14px;flex-wrap:wrap}
+.ex-info{flex:1;min-width:240px}
+.ex-info h3{font-family:'Lalezar','Vazirmatn',sans-serif;font-size:22px;font-weight:400}
+.ex-meta{font-size:13px;color:var(--ink-2);margin:4px 0 8px;font-weight:600}
+.ex-link code{font-size:12px;background:#f1efe6;border:1px solid var(--line);padding:4px 10px;border-radius:8px;word-break:break-all}
+.ex-side{display:flex;flex-direction:column;gap:10px;align-items:flex-start;justify-content:center}
+.ex-stats{font-size:13px;font-weight:700;color:var(--ink-2)}
+.row-actions{display:flex;gap:6px;flex-wrap:wrap}
+.form-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;margin-bottom:18px}
+@media(max-width:800px){.form-grid{grid-template-columns:1fr}}
+.form-grid3{display:grid;grid-template-columns:2fr 1fr;gap:0 16px}
+.form-grid3 .span2{grid-column:span 2}
+@media(max-width:700px){.form-grid3{grid-template-columns:1fr}.form-grid3 .span2{grid-column:auto}}
+.switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer;font-size:14px;font-weight:700;user-select:none}
+.switch input{display:none}
+.switch span{width:42px;height:24px;background:#c9cee0;border-radius:20px;position:relative;transition:.2s;flex:none}
+.switch span::after{content:'';position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.switch input:checked+span{background:var(--ok)}
+.switch input:checked+span::after{right:21px}
+.switch em{font-style:normal}
+.q-item{padding:18px;margin-bottom:14px}
+.qi-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.q-badge{font-family:'Lalezar','Vazirmatn',sans-serif;font-size:18px;background:var(--pen);color:#fff;padding:1px 14px;border-radius:10px}
+.icon-btn{width:32px;height:32px;border-radius:9px;border:1.5px solid var(--line);background:#fff;cursor:pointer;font-size:15px;transition:.15s;color:var(--ink)}
+.icon-btn:hover:not(:disabled){border-color:var(--ink);transform:translateY(-1px)}
+.icon-btn.danger:hover{border-color:var(--pen);color:var(--pen)}
+.icon-btn:disabled{opacity:.35;cursor:not-allowed}
+.qi-body{display:flex;gap:20px;flex-wrap:wrap}
+.qi-img{flex:1;min-width:250px;display:flex;flex-direction:column;gap:8px}
+.qprev{border:2px dashed var(--line);border-radius:12px;min-height:110px;display:grid;place-items:center;padding:8px;background:#fcfbf6}
+.qprev-img{max-width:100%;max-height:280px;border-radius:8px}
+.qprev-empty{font-size:13px;color:#9aa0b5;text-align:center;padding:14px}
+.qi-corr{min-width:190px}
+.corr-opts{display:flex;gap:8px}
+.corr{cursor:pointer}
+.corr input{display:none}
+.corr span{width:42px;height:42px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-family:'Lalezar','Vazirmatn',sans-serif;font-size:20px;transition:.15s}
+.corr:hover span{border-color:var(--ok)}
+.corr.on span,.corr input:checked+span{background:var(--ok);border-color:var(--ok);color:#fff;animation:pop .25s}
+.save-bar{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:8px}
+#linkBox{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px}
+#linkBox code{font-size:12px;background:#f1efe6;border:1px solid var(--line);padding:5px 10px;border-radius:8px;word-break:break-all}
+.table-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:right;color:var(--ink-2);font-size:12.5px;border-bottom:2px solid var(--line);padding:10px 8px;white-space:nowrap}
+.tbl td{padding:11px 8px;border-bottom:1px solid #ece8db;vertical-align:middle}
+.tbl tr:hover td{background:#faf8f0}
+.sel-w{width:auto;min-width:200px}
+.overlay{position:fixed;inset:0;background:rgba(15,22,50,.55);backdrop-filter:blur(3px);z-index:100;display:grid;place-items:center;padding:18px;animation:fadeUp .2s}
+.modal{background:#fff;border-radius:18px;padding:26px;max-width:460px;width:100%;animation:popIn .25s cubic-bezier(.2,.9,.3,1.2)}
+.modal:has(.lb-img){max-width:min(96vw,1000px)}
+@keyframes popIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+.modal .disp{font-size:24px;margin-bottom:10px}
+.m-msg{line-height:2;margin-bottom:14px}
+.m-actions{display:flex;gap:10px;justify-content:flex-start;margin-top:18px;flex-wrap:wrap}
+.lb-img{max-width:100%;border-radius:10px;display:block}
+.creds{background:#f4f2e9;border:1px dashed var(--line);border-radius:10px;padding:14px;font-size:14px;line-height:2.1;white-space:pre-wrap;margin:10px 0}
+.det-row{display:flex;gap:12px;align-items:center;padding:8px 4px;border-bottom:1px solid #eee9db;font-size:14px;flex-wrap:wrap}
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:300;pointer-events:none;display:flex;flex-direction:column;gap:8px;align-items:center}
+.toast-item{background:var(--ink);color:#fff;padding:12px 24px;border-radius:12px;box-shadow:0 10px 30px -8px rgba(20,30,70,.5);font-weight:700;font-size:14px;animation:fadeUp .3s}
+.toast-item.err{background:var(--pen)}
+.loading{padding:44px;text-align:center;color:var(--ink-2);font-weight:600;animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.45}}
+.empty{background:#fff;border:2px dashed var(--line);border-radius:14px;padding:30px;text-align:center;color:var(--ink-2);font-weight:600}
+.greet{margin-bottom:20px}
+.greet h2{font-size:32px}
+.greet p{color:var(--ink-2);font-weight:500}
+.stu-row{display:flex;justify-content:space-between;gap:14px;padding:18px 20px;margin-bottom:12px;align-items:center;flex-wrap:wrap}
+.stu-row h3{font-family:'Lalezar','Vazirmatn',sans-serif;font-size:21px;font-weight:400}
+.stu-side{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.intro{padding:32px;margin-top:30px}
+.intro-tag{display:inline-block;background:var(--pen-soft);color:var(--pen);font-size:13px;font-weight:800;padding:4px 14px;border-radius:99px;margin-bottom:10px}
+.intro h2{font-size:34px}
+.intro-meta{display:flex;gap:26px;margin:18px 0}
+.im{display:flex;flex-direction:column;align-items:center;background:#f7f5ec;border:1px solid var(--line);border-radius:14px;padding:12px 26px}
+.im b{font-family:'Lalezar','Vazirmatn',sans-serif;font-size:30px}
+.im span{font-size:13px;color:var(--ink-2);font-weight:700}
+.rules{list-style:none;margin:6px 0 22px;display:grid;gap:8px}
+.rules li{position:relative;padding-right:22px;font-size:14.5px;line-height:1.9;color:var(--ink-2)}
+.rules li::before{content:'✏️';position:absolute;right:0;top:2px;font-size:13px}
+.big-msg{font-size:18px;font-weight:700;margin-bottom:18px;line-height:2}
+.narrow-card{max-width:480px;margin-top:30px}
+.sep{border:none;border-top:1px dashed var(--line);margin:18px 0}
+.steps{padding-right:20px;line-height:2.4}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="margin-line"></div>
+<div id="bg-syms" aria-hidden="true"></div>
+<main id="app"><div class="loading">در حال بارگذاری…</div></main>
+<div id="toast"></div>
+
+<!-- ═══ Firebase SDK از CDN جایگزین + fallback ═══ -->
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></script>
+<script>if(typeof firebase==='undefined')document.write('<script src="https://unpkg.com/firebase@10.12.2/firebase-app-compat.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"></script>
+<script>if(typeof firebase==='undefined'||!firebase.firestore)document.write('<script src="https://unpkg.com/firebase@10.12.2/firebase-firestore-compat.js"><\/script>')</script>
+
+<script>
+'use strict';
+/* ═══════════════════ تنظیمات ═══════════════════ */
+const firebaseConfig = {
+  apiKey: "AIzaSyAO6Ekph48lTPKHVM9nZh6BUsS_4nIKr_4",
+  authDomain: "azmoonak.firebaseapp.com",
+  projectId: "azmoonak",
+  storageBucket: "azmoonak.firebasestorage.app",
+  messagingSenderId: "658188589200",
+  appId: "1:658188589200:web:f553121873772442482015"
+};
+const ADMIN_USER = "Pouria";
+const ADMIN_PASS = "Pouria123";
+const SALT = "azmunak-v1";
+/* ═══════════════════════════════════════════════ */
+
+const NOT_SET = !firebaseConfig.apiKey || firebaseConfig.apiKey.indexOf('YOUR_')===0;
+let db = null;
+
+/* ── ابزارها ── */
+const appEl = document.getElementById('app');
+const $ = s => document.querySelector(s);
+const fa = n => Number(n??0).toLocaleString('fa-IR');
+const faStr = s => String(s).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = (n=8)=>{const c='abcdefghjkmnpqrstuvwxyz23456789';let s='';for(let i=0;i<n;i++)s+=c[Math.floor(Math.random()*c.length)];return s;};
+const examLink = id => location.origin+location.pathname+'#/exam/'+id;
+function fmtTimer(sec){sec=Math.max(0,Math.floor(sec));return faStr(String(Math.floor(sec/60)).padStart(2,'0'))+':'+faStr(String(sec%60).padStart(2,'0'));}
+function fmtDur(ms){const s=Math.max(0,Math.round((ms||0)/1000));return faStr(String(Math.floor(s/60)).padStart(2,'0'))+':'+faStr(String(s%60).padStart(2,'0'));}
+function fmtDate(ts){try{return new Date(ts).toLocaleString('fa-IR',{dateStyle:'short',timeStyle:'short'});}catch(e){return '';}}
+async function sha(t){
+  const str=SALT+':'+t;
+  try{
+    const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+    return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+  }catch(e){
+    let h1=0xdeadbeef,h2=0x41c6ce57;
+    for(let i=0;i<str.length;i++){const ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}
+    h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
+    h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+    return (h2>>>0).toString(16).padStart(8,'0')+(h1>>>0).toString(16).padStart(8,'0');
+  }
+}
+function toast(msg,type='ok'){
+  const box=document.getElementById('toast');const el=document.createElement('div');
+  el.className='toast-item'+(type==='err'?' err':'');el.textContent=msg;box.appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';el.style.transition='.4s';setTimeout(()=>el.remove(),420);},2800);
+}
+function copyText(t){
+  const legacy=()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('کپی شد ✓');}catch(e){toast('کپی نشد','err');}ta.remove();};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>toast('کپی شد ✓')).catch(legacy);}else legacy();
+}
+function fileToDataURL(file,maxW=800){
+  return new Promise((res,rej)=>{
+    const img=new Image(),url=URL.createObjectURL(file);
+    img.onload=()=>{let w=img.width,h=img.height;if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+      const c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);URL.revokeObjectURL(url);
+      res(c.toDataURL('image/jpeg',0.75));};
+    img.onerror=rej;img.src=url;
+  });
+}
+async function uploadImage(dataUrl){return dataUrl;}
+function videoEmbed(url){
+  if(!url)return '';url=url.trim();
+  const mAp=url.match(/aparat\.com\/v\/([A-Za-z0-9]+)/i);
+  if(mAp)return '<div class="video-wrap"><iframe src="https://www.aparat.com/video/video/embed/videohash/'+mAp[1]+'/vt/frame" allowfullscreen></iframe></div>';
+  const mYt=url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([\w-]{6,})/i);
+  if(mYt)return '<div class="video-wrap"><iframe src="https://www.youtube.com/embed/'+mYt[1]+'" allowfullscreen></iframe></div>';
+  if(/\.(mp4|webm|m4v|mov)(\?|$)/i.test(url))return '<video class="vid" src="'+esc(url)+'" controls></video>';
+  return '<div class="video-wrap"><iframe src="'+esc(url)+'" allowfullscreen></iframe></div>';
+}
+
+/* ── نشست و روتر ── */
+let session=null;try{session=JSON.parse(localStorage.getItem('az_session'));}catch(e){}
+function setSession(s){session=s;s?localStorage.setItem('az_session',JSON.stringify(s)):localStorage.removeItem('az_session');}
+let timerTick=null;
+let _bootCleared=false;
+
+function openModal(html){
+  closeModal();
+  const ov=document.createElement('div');ov.className='overlay';
+  ov.innerHTML='<div class="modal">'+html+'</div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click',e=>{if(e.target===ov)closeModal();});
+  return ov;
+}
+function closeModal(){document.querySelectorAll('.overlay').forEach(o=>o.remove());}
+function confirmBox(msg,onYes,yes='بله، مطمئنم'){
+  const ov=openModal('<p class="m-msg">'+msg+'</p><div class="m-actions"><button class="btn btn-danger" id="my">'+yes+'</button><button class="btn btn-ghost" id="mn">انصراف</button></div>');
+  ov.querySelector('#my').onclick=()=>{closeModal();onYes();};
+  ov.querySelector('#mn').onclick=closeModal;
+}
+function promptBox(title,label,onOk){
+  const ov=openModal('<h3 class="disp">'+title+'</h3><label class="lbl">'+label+'</label><input class="inp" id="pv"><div class="m-actions"><button class="btn btn-primary" id="po">تأیید</button><button class="btn btn-ghost" id="pc">انصراف</button></div>');
+  const inp=ov.querySelector('#pv');inp.focus();
+  const go=()=>{const v=inp.value.trim();if(!v)return;closeModal();onOk(v);};
+  ov.querySelector('#po').onclick=go;
+  inp.onkeydown=e=>{if(e.key==='Enter')go();};
+  ov.querySelector('#pc').onclick=closeModal;
+}
+function messagePage(txt){
+  const top=(session&&session.role==='student')?studentTop():'';
+  appEl.innerHTML=top+'<div class="wrap narrow"><div class="card pad center fade-up" style="margin-top:44px"><p class="big-msg">'+txt+'</p><a class="btn btn-primary" href="#/">صفحهٔ ورود</a></div></div>';
+}
+
+async function route(){
+  if(!_bootCleared){clearTimeout(window._bootTimer);_bootCleared=true;}
+  clearInterval(timerTick);timerTick=null;window.onbeforeunload=null;
+  const raw=(location.hash||'#/').slice(2);
+  const qi=raw.indexOf('?');
+  const path=qi>=0?raw.slice(0,qi):raw;
+  const query=new URLSearchParams(qi>=0?raw.slice(qi+1):'');
+  const seg=path.split('/').filter(Boolean);
+  try{
+    if(!seg.length||seg[0]==='login')return renderLogin(query.get('next'));
+    if(seg[0]==='student')return await viewStudentHome();
+    if(seg[0]==='exam')return await viewExam(seg[1]);
+    if(seg[0]==='result')return await viewResult(seg[1]);
+    if(seg[0]==='admin')return await viewAdmin(seg);
+    location.hash='#/';
+  }catch(err){
+    console.error(err);
+    messagePage('خطا در برقراری ارتباط با سرور 🔌<br><small>اینترنت را چک کن و دوباره تلاش کن</small><br><br><button class="btn btn-primary" onclick="location.reload()">🔄 تلاش دوباره</button>');
+  }
+}
+
+/* ── صفحهٔ ورود ── */
+function renderLogin(next){
+  if(session){location.replace(session.role==='admin'?'#/admin':'#/student');return;}
+  appEl.innerHTML=
+  '<div class="login-page">'+
+    '<div class="login-hero fade-up">'+
+      '<div class="hero-logo"><span class="tick big">√</span><h1>آزمونک</h1></div>'+
+      '<p class="tag">پلتفرم آزمون‌های خصوصی ریاضی</p>'+
+      '<ul class="feats">'+
+        '<li class="fade-up" style="animation-delay:.05s">⏱ تایمر دقیق، بالای صفحهٔ آزمون</li>'+
+        '<li class="fade-up" style="animation-delay:.15s">🖼 سؤالات تصویری، چهار گزینه‌ای</li>'+
+        '<li class="fade-up" style="animation-delay:.25s">📊 کارنامه و درصدِ آنی بعد از ثبت</li>'+
+        '<li class="fade-up" style="animation-delay:.35s">🎬 پاسخ ویدئویی و کلید بعد از آزمون</li>'+
+      '</ul>'+
+    '</div>'+
+    '<form class="card login-card fade-up" id="loginForm" style="animation-delay:.15s">'+
+      '<h2 class="disp">ورود به آزمونک</h2>'+
+      '<label class="lbl">نام کاربری</label><input class="inp" id="lu" dir="ltr" autocomplete="username" required>'+
+      '<label class="lbl">رمز عبور</label><input class="inp" id="lp" dir="ltr" type="password" autocomplete="current-password" required>'+
+      '<button class="btn btn-primary big full" id="loginBtn">ورود</button>'+
+      '<p class="hint">حساب دانش‌آموزی فقط توسط مدیر ساخته می‌شود.</p>'+
+    '</form>'+
+  '</div>';
+  $('#loginForm').onsubmit=async e=>{
+    e.preventDefault();
+    const btn=$('#loginBtn'),u=$('#lu').value.trim().toLowerCase(),p=$('#lp').value;
+    if(!u||!p)return;
+    btn.disabled=true;btn.textContent='در حال ورود…';
+    try{
+      if(u===ADMIN_USER.toLowerCase()){
+        const ph=await sha(p);
+        const doc=await db.collection('settings').doc('admin').get();
+        let ok=false;
+        if(doc.exists){ok=doc.data().pass===ph;}
+        else if(p===ADMIN_PASS){ok=true;await db.collection('settings').doc('admin').set({user:u,pass:ph});}
+        if(ok){setSession({role:'admin',name:'مدیر'});location.hash=(next&&next.startsWith('#'))?next:'#/admin';}
+        else toast('نام کاربری یا رمز اشتباه است','err');
+      }else{
+        const snap=await db.collection('students').where('username','==',u).limit(1).get();
+        let ok=false;
+        if(!snap.empty){
+          const d=snap.docs[0];ok=d.data().pass===await sha(p);
+          if(ok){setSession({role:'student',id:d.id,name:d.data().name,username:u});location.hash=(next&&next.startsWith('#'))?next:'#/student';}
+        }
+        if(!ok)toast('نام کاربری یا رمز اشتباه است','err');
+      }
+    }catch(err){console.error(err);toast('خطا در اتصال — اینترنت را چک کن','err');}
+    btn.disabled=false;btn.textContent='ورود';
+  };
+}
+
+/* ── پوسته‌ها ── */
+function studentTop(){
+  return '<header class="topbar"><div class="inner">'+
+    '<a class="logo" href="#/student" style="text-decoration:none"><span class="tick">√</span> آزمونک</a>'+
+    '<span class="spacer"></span>'+
+    '<span class="who">👤 '+esc(session?session.name:'')+'</span>'+
+    '<button class="btn btn-outline-inv btn-sm" id="logoutBtn">خروج</button>'+
+  '</div></header>';
+}
+function adminShell(active,fn){
+  const tabs=[['exams','📝 آزمون‌ها'],['new','➕ ساخت آزمون'],['students','👥 دانش‌آموزان'],['results','📊 نتایج'],['settings','⚙️ تنظیمات']];
+  appEl.innerHTML=
+  '<header class="topbar"><div class="inner">'+
+    '<span class="logo"><span class="tick">√</span> آزمونک</span>'+
+    '<nav class="tabs">'+tabs.map(t=>'<a class="tab '+(active===t[0]?'active':'')+'" href="#/admin/'+t[0]+'">'+t[1]+'</a>').join('')+'</nav>'+
+    '<span class="spacer"></span>'+
+    '<button class="btn btn-outline-inv btn-sm" id="logoutBtn">خروج</button>'+
+  '</div></header>'+
+  '<div class="wrap" id="adminContent"><div class="loading">در حال بارگذاری…</div></div>';
+  return fn();
+}
+
+/* ── صفحهٔ اصلی دانش‌آموز ── */
+async function viewStudentHome(){
+  if(!session||session.role!=='student'){location.hash='#/login?next=%23%2Fstudent';return;}
+  appEl.innerHTML=studentTop()+'<div class="wrap narrow"><div class="greet fade-up"><h2 class="disp">سلام، '+esc(session.name)+' 👋</h2><p>آزمون‌های تو اینجاست؛ روی هر کدام که خواستی بزن.</p></div><div id="exlist"><div class="loading">در حال بارگذاری…</div></div></div>';
+  const [exSnap,resSnap]=await Promise.all([
+    db.collection('exams').where('published','==',true).get(),
+    db.collection('results').where('studentId','==',session.id).get()
+  ]);
+  const exams=[];exSnap.forEach(d=>exams.push({id:d.id,...d.data()}));
+  exams.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  const res={};resSnap.forEach(d=>{res[d.data().examId]={id:d.id,...d.data()};});
+  const list=$('#exlist');
+  if(!exams.length){list.innerHTML='<div class="empty">هنوز آزمونی برایت ثبت نشده است. 📭</div>';return;}
+  list.innerHTML=exams.map((e,i)=>{
+    const r=res[e.id];let chip,action;
+    if(r&&r.status==='done'){
+      chip='<span class="chip '+(r.percent>=80?'g':r.percent>=50?'y':'r')+'">شرکت کرده — '+fa(r.percent)+'٪</span>';
+      action='<a class="btn btn-ghost btn-sm" href="#/result/'+r.id+'">📄 کارنامه و پاسخ‌ها</a>';
+    }else if(r&&r.status==='active'){
+      chip='<span class="chip y">در حال برگزاری…</span>';
+      action='<a class="btn btn-primary btn-sm" href="#/exam/'+e.id+'">▶ ادامهٔ آزمون</a>';
+    }else{
+      chip='<span class="chip b">برگزار نشده</span>';
+      action='<a class="btn btn-primary btn-sm" href="#/exam/'+e.id+'">📝 شرکت در آزمون</a>';
+    }
+    return '<div class="card stu-row fade-up" style="animation-delay:'+(i*70)+'ms"><div><h3>'+esc(e.title)+'</h3><div class="ex-meta">'+fa(e.questions.length)+' سؤال · '+fa(e.duration)+' دقیقه</div></div><div class="stu-side">'+chip+action+'</div></div>';
+  }).join('');
+}
+
+/* ── جریان آزمون ── */
+async function viewExam(id){
+  if(!id){location.hash='#/student';return;}
+  if(!session){location.hash='#/login?next='+encodeURIComponent('#/exam/'+id);return;}
+  if(session.role!=='student'){messagePage('برای شرکت در آزمون باید با حساب دانش‌آموز وارد شوی.');return;}
+  const d=await db.collection('exams').doc(id).get();
+  if(!d.exists){messagePage('آزمون پیدا نشد. لینک را دوباره چک کن.');return;}
+  const exam={id:d.id,...d.data()};
+  if(!exam.published){messagePage('این آزمون هنوز فعال نشده است. بعداً سر بزن. 🙂');return;}
+  const resRef=db.collection('results').doc(id+'_'+session.id);
+  const rd=await resRef.get();
+  if(rd.exists){
+    const r=rd.data();
+    if(r.status==='done'){location.replace('#/result/'+rd.id);return;}
+    if(r.status==='active'){runExam(exam,resRef,r);return;}
+  }
+  appEl.innerHTML=studentTop()+'<div class="wrap narrow"><div class="card intro fade-up">'+
+    '<span class="intro-tag">آزمون تستی · چهار گزینه‌ای</span>'+
+    '<h2 class="disp">'+esc(exam.title)+'</h2>'+
+    '<div class="intro-meta">'+
+      '<div class="im"><b>'+fa(exam.questions.length)+'</b><span>سؤال</span></div>'+
+      '<div class="im"><b>'+fa(exam.duration)+'</b><span>دقیقه</span></div>'+
+      '<div class="im"><b>۴</b><span>گزینه</span></div>'+
+    '</div>'+
+    '<ul class="rules">'+
+      '<li>به محض زدن دکمهٔ شروع، زمان به جریان می‌افتد و حتی با بستن صفحه متوقف نمی‌شود.</li>'+
+      '<li>می‌توانی پاسخ‌هایت را تا قبل از ثبت نهایی تغییر دهی.</li>'+
+      '<li>با پایان زمان، پاسخ‌های داده‌شده خودکار ثبت می‌شوند.</li>'+
+    '</ul>'+
+    '<button class="btn btn-primary big" id="startBtn">▶ شروع آزمون</button>'+
+  '</div></div>';
+  $('#startBtn').onclick=async()=>{
+    const btn=$('#startBtn');btn.disabled=true;btn.textContent='در حال آماده‌سازی…';
+    const startedAt=Date.now(),answers=Array(exam.questions.length).fill(0);
+    await resRef.set({status:'active',examId:exam.id,examTitle:exam.title,studentId:session.id,studentName:session.name,
+      startedAt,answers,correct:0,wrong:0,blank:0,total:exam.questions.length,percent:0,finishedAt:0});
+    runExam(exam,resRef,{startedAt,answers});
+  };
+}
+
+function examHTML(exam,answers){
+  const qs=exam.questions.map((q,i)=>
+    '<section class="card q-card fade-up" data-q="'+i+'" style="animation-delay:'+Math.min(i*70,600)+'ms">'+
+      '<div class="q-head"><span class="q-num">سؤال '+fa(i+1)+'</span></div>'+
+      '<img class="qimg" src="'+q.img+'" alt="سؤال '+(i+1)+'" loading="lazy" onerror="this.style.display=\'none\'">'+
+      '<div class="opts">'+[1,2,3,4].map(o=>
+        '<button type="button" class="opt'+(answers[i]===o?' sel':'')+'" data-o="'+o+'"><span class="n">'+fa(o)+'</span><span>گزینهٔ '+fa(o)+'</span></button>'
+      ).join('')+'</div>'+
+    '</section>').join('');
+  return '<div class="exambar">'+
+    '<div class="tinfo"><b>'+esc(exam.title)+'</b><span>👤 '+esc(session.name)+'</span></div>'+
+    '<span class="spacer"></span>'+
+    '<div class="tmr"><span class="lbl2">زمان باقی‌مانده</span><span class="timerbox" id="timer">--:--</span></div>'+
+    '<div class="ans">پاسخ‌داده‌شده: <b id="answered"></b></div>'+
+    '<button class="btn btn-pen" id="submitBtn">ثبت نهایی</button>'+
+  '</div><div class="timebar"><i id="tfill" style="width:100%"></i></div>'+
+  '<div class="wrap narrow">'+
+    '<div class="exam-hint">💡 اگر صفحه را ببندی هم زمان در جریان می‌ماند و می‌توانی از همین لینک ادامه بدهی.</div>'+
+    qs+
+    '<div class="center" style="margin:26px 0"><button class="btn btn-pen big" id="submitBtn2">ثبت نهایی آزمون ✔</button></div>'+
+  '</div>';
+}
+
+function runExam(exam,resRef,state){
+  const answers=[...(state.answers||[])];
+  while(answers.length<exam.questions.length)answers.push(0);
+  const total=exam.questions.length;
+  const deadline=state.startedAt+exam.duration*60000;
+  let saving=null,finished=false;
+  appEl.innerHTML=examHTML(exam,answers);
+  const timerEl=$('#timer'),fillEl=$('#tfill'),ansEl=$('#answered');
+  function paint(){
+    const done=answers.filter(a=>a>0).length;
+    ansEl.textContent=fa(done)+' از '+fa(total);
+    const rem=Math.max(0,deadline-Date.now());
+    timerEl.textContent=fmtTimer(rem/1000);
+    timerEl.classList.toggle('low',rem<60000);
+    fillEl.style.width=(rem/(exam.duration*60000)*100)+'%';
+    if(rem<=0&&!finished){finished=true;toast('⏰ زمان آزمون تمام شد — پاسخ‌هایت ثبت شد');finish();}
+  }
+  document.querySelectorAll('.q-card').forEach(card=>{
+    const qi=+card.dataset.q;
+    card.querySelectorAll('.opt').forEach(b=>{b.onclick=()=>{
+      if(finished)return;
+      answers[qi]=+b.dataset.o;
+      card.querySelectorAll('.opt').forEach(x=>x.classList.toggle('sel',x===b));
+      paint();
+      clearTimeout(saving);saving=setTimeout(()=>resRef.update({answers}).catch(()=>{}),600);
+    };});
+  });
+  const doSubmit=()=>{
+    if(finished)return;
+    const done=answers.filter(a=>a>0).length;
+    const ov=openModal('<h3 class="disp">ثبت نهایی آزمون</h3><p class="m-msg">به <b>'+fa(done)+'</b> سؤال از <b>'+fa(total)+'</b> پاسخ داده‌ای.<br>بعد از ثبت، دیگر نمی‌توانی چیزی را تغییر دهی. مطمئنی؟</p>'+
+      '<div class="m-actions"><button class="btn btn-primary" id="fy">✔ ثبت می‌کنم</button><button class="btn btn-ghost" id="fn">ادامهٔ آزمون</button></div>');
+    ov.querySelector('#fy').onclick=()=>{closeModal();finished=true;finish();};
+    ov.querySelector('#fn').onclick=closeModal;
+  };
+  $('#submitBtn').onclick=doSubmit;$('#submitBtn2').onclick=doSubmit;
+  async function finish(){
+    clearInterval(timerTick);window.onbeforeunload=null;
+    let correct=0;exam.questions.forEach((q,i)=>{if(answers[i]===q.correct)correct++;});
+    const blank=answers.filter(a=>a===0).length,wrong=total-correct-blank;
+    const percent=total?Math.round(correct/total*100):0;
+    try{await resRef.update({status:'done',answers,correct,wrong,blank,total,percent,finishedAt:Date.now()});}catch(e){console.error(e);}
+    location.hash='#/result/'+resRef.id;
+  }
+  window.onbeforeunload=e=>{e.preventDefault();return '';};
+  paint();
+  timerTick=setInterval(paint,250);
+}
+
+/* ── کارنامهٔ دانش‌آموز ── */
+async function viewResult(resId){
+  if(!session||session.role!=='student'){location.hash='#/login';return;}
+  const rd=await db.collection('results').doc(resId).get();
+  if(!rd.exists){messagePage('کارنامه‌ای پیدا نشد.');return;}
+  const r=rd.data();
+  if(r.studentId!==session.id){messagePage('این کارنامه متعلق به تو نیست.');return;}
+  if(r.status!=='done'){location.replace('#/exam/'+r.examId);return;}
+  let exam=null;
+  const ed=await db.collection('exams').doc(r.examId).get();
+  if(ed.exists)exam={id:ed.id,...ed.data()};
+  const color=r.percent>=80?'var(--ok)':r.percent>=50?'var(--amber)':'var(--pen)';
+  const msg=r.percent>=85?'عالی بود! آفرین 🎉':r.percent>=60?'خوب بود؛ با کمی تمرین، بهتر هم می‌شود 👍':r.percent>=35?'بد نبود، ولی جای کار دارد 💪':'نگران نباش؛ پاسخ‌نامه و ویدیو را ببین و دوباره تمرین کن 📚';
+  const C=(2*Math.PI*62).toFixed(1);
+  let html=studentTop()+'<div class="wrap narrow">'+
+  '<div class="card pad result-head fade-up">'+
+    '<div class="gauge"><svg width="170" height="170" viewBox="0 0 170 170">'+
+      '<circle cx="85" cy="85" r="62" fill="none" stroke="#ece7d8" stroke-width="13"/>'+
+      '<circle id="gval" cx="85" cy="85" r="62" fill="none" stroke="'+color+'" stroke-width="13" stroke-linecap="round" stroke-dasharray="'+C+'" stroke-dashoffset="'+C+'" style="transition:stroke-dashoffset 1.3s cubic-bezier(.25,.8,.3,1)"/>'+
+    '</svg><div class="val">'+fa(r.percent)+'٪</div></div>'+
+    '<div class="r-text"><span class="intro-tag">کارنامهٔ آزمون</span>'+
+      '<h2 class="disp">'+esc(r.examTitle)+'</h2><p class="r-msg">'+msg+'</p>'+
+      '<div class="r-stats"><span class="chip g">✔ صحیح '+fa(r.correct)+'</span><span class="chip r">✘ غلط '+fa(r.wrong)+'</span><span class="chip b">⚪ بی‌پاسخ '+fa(r.blank)+'</span><span class="chip y">⏱ '+fmtDur(r.finishedAt-r.startedAt)+'</span></div>'+
+    '</div>'+
+  '</div>';
+  if(exam&&exam.videoUrl)html+='<div class="card pad fade-up"><h2 class="disp sec-title">🎬 پاسخ ویدئویی</h2>'+videoEmbed(exam.videoUrl)+'</div>';
+  if(exam){
+    html+='<h2 class="disp sec-title">🗝 کلید و پاسخ‌نامه</h2>'+exam.questions.map((q,i)=>{
+      const a=(r.answers||[])[i]||0;
+      const st=a===0?['b','⚪ بی‌پاسخ']:a===q.correct?['g','✔ صحیح']:['r','✘ غلط'];
+      return '<div class="card pad q-card fade-up">'+
+        '<div class="q-head"><span class="q-num">سؤال '+fa(i+1)+'</span><span class="chip '+st[0]+'">'+st[1]+'</span></div>'+
+        '<img class="qimg" src="'+q.img+'" loading="lazy" onerror="this.style.display=\'none\'">'+
+        '<div class="opts">'+[1,2,3,4].map(o=>{
+          let cls='',tag='';
+          if(o===q.correct){cls='good';tag='<span class="tag t-ok">'+(a===o?'انتخاب تو ✓':'پاسخ صحیح')+'</span>';}
+          else if(o===a){cls='bad';tag='<span class="tag t-bad">انتخاب تو</span>';}
+          return '<div class="opt ro '+cls+'"><span class="n">'+fa(o)+'</span><span>گزینهٔ '+fa(o)+'</span>'+tag+'</div>';
+        }).join('')+'</div></div>';
+    }).join('');
+  }else html+='<div class="card pad" style="margin-top:16px">آزمون مربوطه حذف شده؛ پاسخ‌نامه در دسترس نیست.</div>';
+  html+='<div class="center" style="margin:26px 0"><a class="btn btn-primary" href="#/student">بازگشت به آزمون‌های من</a></div></div>';
+  appEl.innerHTML=html;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{const g=$('#gval');if(g)g.style.strokeDashoffset=(C*(1-r.percent/100)).toFixed(1);}));
+}
+
+/* ── پنل ادمین ── */
+async function viewAdmin(seg){
+  if(!session||session.role!=='admin'){location.hash='#/login?next=%23%2Fadmin';return;}
+  const tab=seg[1]||'exams';
+  if(tab==='exams')return adminShell('exams',adminExamsList);
+  if(tab==='new')return adminShell('new',()=>adminEditor(null));
+  if(tab==='edit'&&seg[2])return adminShell('new',()=>adminEditor(seg[2]));
+  if(tab==='students')return adminShell('students',adminStudents);
+  if(tab==='results')return adminShell('results',adminResults);
+  if(tab==='settings')return adminShell('settings',adminSettings);
+  location.hash='#/admin';
+}
+const statCard=(l,v)=>'<div class="stat fade-up"><b>'+v+'</b><span>'+l+'</span></div>';
+
+async function adminExamsList(){
+  const box=$('#adminContent');
+  const [examsSnap,resSnap]=await Promise.all([
+    db.collection('exams').orderBy('createdAt','desc').get(),
+    db.collection('results').where('status','==','done').get()
+  ]);
+  const stats={};resSnap.forEach(d=>{const r=d.data();const s=stats[r.examId]||(stats[r.examId]={n:0,sum:0});s.n++;s.sum+=r.percent;});
+  let totalP=0,totalN=0;resSnap.forEach(d=>{totalN++;totalP+=d.data().percent;});
+  const exams=[];examsSnap.forEach(d=>exams.push({id:d.id,...d.data()}));
+  box.innerHTML=
+  '<div class="stats-row" style="margin-top:8px">'+
+    statCard('آزمون‌ها',fa(exams.length))+
+    statCard('شرکت‌کننده‌ها',fa(totalN))+
+    statCard('میانگین کل',totalN?fa(Math.round(totalP/totalN))+'٪':'—')+
+  '</div>'+
+  '<div class="toolbar"><h2 class="disp">آزمون‌ها</h2><a href="#/admin/new" class="btn btn-primary">➕ ساخت آزمون جدید</a></div>'+
+  (exams.length?'':'<div class="empty">هنوز آزمونی نساخته‌ای؛ از دکمهٔ بالا شروع کن ✍️</div>')+
+  exams.map(e=>{
+    const s=stats[e.id]||{n:0,sum:0};
+    return '<div class="card exam-row fade-up">'+
+      '<div class="ex-info"><h3>'+esc(e.title)+'</h3>'+
+        '<div class="ex-meta">'+fa(e.questions.length)+' سؤال · '+fa(e.duration)+' دقیقه · '+fmtDate(e.createdAt)+(e.videoUrl?' · 🎬 ویدیو':'')+'</div>'+
+        '<div class="ex-link"><code dir="ltr">'+examLink(e.id)+'</code></div></div>'+
+      '<div class="ex-side">'+
+        '<div class="ex-stats">'+(s.n?fa(s.n)+' شرکت‌کننده · میانگین '+fa(Math.round(s.sum/s.n))+'٪':'هنوز کسی شرکت نکرده')+'</div>'+
+        '<label class="switch"><input type="checkbox" data-pub="'+e.id+'" '+(e.published?'checked':'')+'><span></span><em>'+(e.published?'فعال':'غیرفعال')+'</em></label>'+
+        '<div class="row-actions">'+
+          '<button class="btn btn-ghost btn-sm" data-copy="'+examLink(e.id)+'">📋 کپی لینک</button>'+
+          '<a class="btn btn-ghost btn-sm" href="#/admin/edit/'+e.id+'">✏️ ویرایش</a>'+
+          '<button class="btn btn-danger-o btn-sm" data-del="'+e.id+'">🗑 حذف</button>'+
+        '</div></div></div>';
+  }).join('');
+  box.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>copyText(b.dataset.copy));
+  box.querySelectorAll('[data-pub]').forEach(c=>c.onchange=async()=>{
+    await db.collection('exams').doc(c.dataset.pub).update({published:c.checked});
+    toast(c.checked?'آزمون فعال شد ✓':'آزمون غیرفعال شد');route();
+  });
+  box.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>confirmBox('این آزمون همراه با نتایجش حذف می‌شود.',async()=>{
+    const id=b.dataset.del;
+    const rs=await db.collection('results').where('examId','==',id).get();
+    const batch=db.batch();rs.forEach(d=>batch.delete(d.ref));batch.delete(db.collection('exams').doc(id));
+    await batch.commit();toast('حذف شد');route();
+  }));
+}
+
+/* ── ساخت/ویرایش آزمون ── */
+let draft=null,editingId=null;
+async function adminEditor(id){
+  editingId=id||null;
+  if(id){
+    const d=await db.collection('exams').doc(id).get();
+    if(!d.exists){toast('آزمون پیدا نشد','err');location.hash='#/admin';return;}
+    const e=d.data();
+    draft={title:e.title,duration:e.duration,videoUrl:e.videoUrl||'',published:!!e.published,questions:e.questions.map(q=>({img:q.img,correct:q.correct}))};
+  }else draft={title:'',duration:30,videoUrl:'',published:true,questions:[]};
+  drawEditor();
+}
+function drawEditor(){
+  $('#adminContent').innerHTML=
+  '<div class="card pad fade-up"><h2 class="disp" style="font-size:28px">'+(editingId?'ویرایش آزمون':'ساخت آزمون جدید')+'</h2>'+
+    '<div class="form-grid3">'+
+      '<div class="span2"><label class="lbl">عنوان آزمون</label><input id="e-title" class="inp" value="'+esc(draft.title)+'" placeholder="مثلاً: آزمون ریاضی نهم — جلسهٔ سوم"></div>'+
+      '<div><label class="lbl">مدت (دقیقه)</label><input id="e-duration" type="number" min="1" class="inp" value="'+draft.duration+'"></div>'+
+      '<div class="span2"><label class="lbl">لینک پاسخ ویدئویی (اختیاری)</label><input id="e-video" dir="ltr" class="inp" value="'+esc(draft.videoUrl)+'" placeholder="https://www.aparat.com/v/xxxxx">'+
+      '<p class="hint">لینک آپارات یا یوتیوب؛ بعد از آزمون نمایش داده می‌شود.</p></div>'+
+      '<div><label class="lbl">وضعیت</label><label class="switch"><input type="checkbox" id="e-pub" '+(draft.published?'checked':'')+'><span></span><em>فعال</em></label></div>'+
+    '</div></div>'+
+  '<div class="toolbar"><h2 class="disp">سؤال‌ها</h2><button class="btn btn-primary" id="addQ">➕ افزودن سؤال</button></div>'+
+  '<div id="qlist"></div>'+
+  '<div class="card pad save-bar fade-up">'+
+    '<button class="btn btn-primary big" id="saveExam">'+(editingId?'💾 ذخیرهٔ تغییرات':'💾 ساخت آزمون')+'</button>'+
+    '<div id="linkBox"></div>'+
+  '</div>';
+  $('#addQ').onclick=()=>{draft.questions.push({img:'',correct:1});drawQList();window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});};
+  $('#saveExam').onclick=saveExam;
+  if(editingId)showLink();
+  drawQList();
+}
+function qItemHTML(q,i){
+  const prev=q.img?'<img class="qprev-img" src="'+esc(q.img)+'" onerror="this.style.display=\'none\'">':'<span class="qprev-empty">تصویر سؤال اینجا نمایش داده می‌شود 📷</span>';
+  return '<div class="card q-item fade-up" data-i="'+i+'">'+
+    '<div class="qi-head"><span class="q-badge">سؤال '+fa(i+1)+'</span><div class="qi-tools">'+
+      '<button class="icon-btn" '+(i===0?'disabled':'')+' data-act="up">↑</button> '+
+      '<button class="icon-btn" '+(i===draft.questions.length-1?'disabled':'')+' data-act="down">↓</button> '+
+      '<button class="icon-btn danger" data-act="del">✕</button>'+
+    '</div></div>'+
+    '<div class="qi-body">'+
+      '<div class="qi-img"><div class="qprev">'+prev+'</div>'+
+        '<input type="file" class="qfile" accept="image/*" hidden>'+
+        '<button class="btn btn-ghost btn-sm" data-act="pick">📤 آپلود تصویر سؤال</button>'+
+        '<input class="inp qurl" dir="ltr" placeholder="…یا لینک تصویر را بچسبان" value="'+esc(q.img)+'"></div>'+
+      '<div class="qi-corr"><p class="lbl" style="margin-top:0">پاسخ صحیح:</p><div class="corr-opts">'+
+        [1,2,3,4].map(o=>'<label class="corr '+(q.correct===o?'on':'')+'"><input type="radio" name="corr'+i+'" value="'+o+'" '+(q.correct===o?'checked':'')+'><span>'+fa(o)+'</span></label>').join('')+
+      '</div><p class="hint">مقادیر گزینه‌ها داخل عکس است.</p></div>'+
+    '</div></div>';
+}
+function drawQList(){
+  const box=$('#qlist');
+  if(!draft.questions.length){box.innerHTML='<div class="empty" style="margin-bottom:14px">هنوز سؤالی اضافه نکرده‌ای.</div>';return;}
+  box.innerHTML=draft.questions.map((q,i)=>qItemHTML(q,i)).join('');
+  box.querySelectorAll('.q-item').forEach(el=>{
+    const i=+el.dataset.i,q=draft.questions[i];
+    el.querySelector('[data-act="pick"]').onclick=()=>el.querySelector('.qfile').click();
+    el.querySelector('.qfile').onchange=async ev=>{
+      const f=ev.target.files[0];if(!f)return;
+      el.querySelector('.qprev').innerHTML='<span class="qprev-empty">⏳ در حال پردازش…</span>';
+      try{
+        const data=await fileToDataURL(f);
+        q.img=await uploadImage(data);
+        toast('تصویر سؤال '+fa(i+1)+' آماده شد ✓');
+      }catch(err){console.error(err);toast('خطا در پردازش تصویر','err');}
+      drawQList();
+    };
+    const urlIn=el.querySelector('.qurl');
+    urlIn.oninput=()=>{q.img=urlIn.value.trim();
+      el.querySelector('.qprev').innerHTML=q.img?'<img class="qprev-img" src="'+esc(q.img)+'" onerror="this.style.display=\'none\'">':'<span class="qprev-empty">تصویر سؤال اینجا نمایش داده می‌شود 📷</span>';};
+    el.querySelectorAll('input[name="corr'+i+'"]').forEach(r=>r.onchange=()=>{
+      q.correct=+r.value;
+      el.querySelectorAll('.corr').forEach(c=>c.classList.toggle('on',c.querySelector('input').checked));
+    });
+    el.querySelectorAll('[data-act]').forEach(b=>{
+      const act=b.dataset.act;
+      const swap=j=>{const t=draft.questions[i];draft.questions[i]=draft.questions[j];draft.questions[j]=t;drawQList();};
+      if(act==='up')b.onclick=()=>{if(i>0)swap(i-1);};
+      if(act==='down')b.onclick=()=>{if(i<draft.questions.length-1)swap(i+1);};
+      if(act==='del')b.onclick=()=>{draft.questions.splice(i,1);drawQList();};
+    });
+  });
+}
+async function saveExam(){
+  draft.title=$('#e-title').value.trim();
+  draft.duration=+$('#e-duration').value||0;
+  draft.videoUrl=$('#e-video').value.trim();
+  draft.published=$('#e-pub').checked;
+  if(!draft.title)return toast('عنوان آزمون را بنویس','err');
+  if(!draft.duration)return toast('مدت آزمون را مشخص کن','err');
+  if(!draft.questions.length)return toast('حداقل یک سؤال اضافه کن','err');
+  for(let i=0;i<draft.questions.length;i++){
+    if(!draft.questions[i].img)return toast('تصویر سؤال '+fa(i+1)+' خالی است','err');
+    if(!draft.questions[i].correct)return toast('پاسخ صحیح سؤال '+fa(i+1)+' مشخص نشده','err');
+  }
+  const btn=$('#saveExam');btn.disabled=true;btn.textContent='در حال ذخیره…';
+  try{
+    const id=editingId||uid(8);
+    const data={title:draft.title,duration:draft.duration,videoUrl:draft.videoUrl,published:draft.published,
+      questions:draft.questions.map(q=>({img:q.img,correct:q.correct}))};
+    if(!editingId)data.createdAt=Date.now();
+    await db.collection('exams').doc(id).set(data,{merge:true});
+    editingId=id;btn.textContent='💾 ذخیرهٔ تغییرات';
+    toast('آزمون ذخیره شد ✓');showLink();
+  }catch(err){console.error(err);toast('خطا در ذخیره','err');}
+  btn.disabled=false;
+}
+function showLink(){
+  const lb=$('#linkBox');
+  lb.innerHTML='<span>🔗 لینک آزمون:</span><code dir="ltr">'+examLink(editingId)+'</code><button class="btn btn-ghost btn-sm" id="copyLink">📋 کپی</button>';
+  $('#copyLink').onclick=()=>copyText(examLink(editingId));
+}
+
+/* ── دانش‌آموزان ── */
+async function adminStudents(){
+  const box=$('#adminContent');
+  const snap=await db.collection('students').orderBy('createdAt','desc').get();
+  const students=[];snap.forEach(d=>students.push({id:d.id,...d.data()}));
+  box.innerHTML=
+  '<div class="toolbar"><h2 class="disp">دانش‌آموزان</h2></div>'+
+  '<form class="card pad form-grid" id="addStu">'+
+    '<div><label class="lbl">نام و نام خانوادگی</label><input class="inp" id="s-name" required></div>'+
+    '<div><label class="lbl">نام کاربری (انگلیسی)</label><input class="inp" id="s-user" dir="ltr" required placeholder="ali.m"></div>'+
+    '<div><label class="lbl">رمز عبور</label><input class="inp" id="s-pass" dir="ltr" required placeholder="حداقل ۴ حرف"></div>'+
+    '<div><button class="btn btn-primary">➕ ساخت حساب</button></div>'+
+  '</form>'+
+  '<div class="card pad table-wrap"><table class="tbl"><tr><th>نام</th><th>نام کاربری</th><th>ساخته‌شده</th><th>عملیات</th></tr>'+
+  (students.map(s=>'<tr><td>'+esc(s.name)+'</td><td dir="ltr">'+esc(s.username)+'</td><td>'+fmtDate(s.createdAt)+'</td>'+
+    '<td><div class="row-actions">'+
+      '<button class="btn btn-ghost btn-sm" data-pass="'+s.id+'" data-name="'+esc(s.name)+'" data-user="'+esc(s.username)+'">🔑 تغییر رمز</button>'+
+      '<button class="btn btn-danger-o btn-sm" data-sdel="'+s.id+'">🗑 حذف</button>'+
+    '</div></td></tr>').join('')||'<tr><td colspan="4" class="center" style="padding:26px">هنوز حسابی نساخته‌ای.</td></tr>')+
+  '</table></div>';
+  $('#addStu').onsubmit=async ev=>{
+    ev.preventDefault();
+    const name=$('#s-name').value.trim(),user=$('#s-user').value.trim().toLowerCase(),pass=$('#s-pass').value;
+    if(!/^[a-z0-9._-]{3,}$/.test(user))return toast('نام کاربری: حداقل ۳ حرف انگلیسی/عدد','err');
+    if(pass.length<4)return toast('رمز حداقل ۴ حرف باشد','err');
+    if(user===ADMIN_USER.toLowerCase())return toast('این نام کاربری رزرو شده','err');
+    const dup=await db.collection('students').where('username','==',user).get();
+    if(!dup.empty)return toast('این نام کاربری قبلاً ثبت شده','err');
+    await db.collection('students').doc(uid(10)).set({name,username:user,pass:await sha(pass),createdAt:Date.now()});
+    toast('حساب ساخته شد ✓');
+    const ov=openModal('<h3 class="disp">اطلاعات ورود ✅</h3><p>این را برای دانش‌آموز بفرست:</p>'+
+      '<pre class="creds" dir="ltr">نام کاربری: '+user+'\nرمز عبور: '+pass+'\nآدرس سایت: '+location.origin+location.pathname+'</pre>'+
+      '<div class="m-actions"><button class="btn btn-primary" id="cc">📋 کپی</button><button class="btn btn-ghost" id="cx">بستن</button></div>');
+    ov.querySelector('#cc').onclick=()=>copyText('نام کاربری: '+user+'\nرمز عبور: '+pass+'\nآدرس سایت: '+location.origin+location.pathname);
+    ov.querySelector('#cx').onclick=closeModal;
+    route();
+  };
+  box.querySelectorAll('[data-pass]').forEach(b=>b.onclick=()=>promptBox('تغییر رمز «'+b.dataset.name+'»','رمز جدید (حداقل ۴ حرف)',async v=>{
+    if(v.length<4)return toast('رمز کوتاه است','err');
+    await db.collection('students').doc(b.dataset.pass).update({pass:await sha(v)});
+    toast('رمز تغییر کرد ✓');
+    const ov=openModal('<h3 class="disp">رمز جدید ✅</h3><pre class="creds" dir="ltr">نام کاربری: '+b.dataset.user+'\nرمز عبور: '+v+'</pre>'+
+      '<div class="m-actions"><button class="btn btn-primary" id="cc2">📋 کپی</button><button class="btn btn-ghost" id="cx2">بستن</button></div>');
+    ov.querySelector('#cc2').onclick=()=>copyText('نام کاربری: '+b.dataset.user+'\nرمز عبور: '+v);
+    ov.querySelector('#cx2').onclick=closeModal;
+  }));
+  box.querySelectorAll('[data-sdel]').forEach(b=>b.onclick=()=>confirmBox('حساب این دانش‌آموز حذف می‌شود.',async()=>{
+    await db.collection('students').doc(b.dataset.sdel).delete();toast('حذف شد');route();
+  }));
+}
+
+/* ── نتایج ── */
+async function adminResults(){
+  const box=$('#adminContent');
+  const [examsSnap,resSnap]=await Promise.all([
+    db.collection('exams').get(),
+    db.collection('results').where('status','==','done').get()
+  ]);
+  const exams={};examsSnap.forEach(d=>exams[d.id]=d.data().title);
+  const all=[];resSnap.forEach(d=>all.push({id:d.id,...d.data()}));
+  all.sort((a,b)=>(b.finishedAt||0)-(a.finishedAt||0));
+  box.innerHTML=
+  '<div class="toolbar"><h2 class="disp">نتایج آزمون‌ها</h2>'+
+    '<select class="inp sel-w" id="rFilter"><option value="">همهٔ آزمون‌ها</option>'+
+    Object.entries(exams).map(([id,t])=>'<option value="'+id+'">'+esc(t)+'</option>').join('')+'</select></div>'+
+  '<div id="rBody"></div>';
+  const render=fid=>{
+    const rows=all.filter(r=>!fid||r.examId===fid);
+    const n=rows.length,avg=n?Math.round(rows.reduce((s,r)=>s+r.percent,0)/n):0,best=n?Math.max(...rows.map(r=>r.percent)):0;
+    $('#rBody').innerHTML=
+    '<div class="stats-row">'+statCard('شرکت‌کننده',fa(n))+statCard('میانگین',n?fa(avg)+'٪':'—')+statCard('بهترین',n?fa(best)+'٪':'—')+'</div>'+
+    '<div class="card pad table-wrap"><table class="tbl"><tr><th>تاریخ</th><th>دانش‌آموز</th><th>آزمون</th><th>درصد</th><th>صحیح</th><th>غلط</th><th>بی‌پاسخ</th><th></th></tr>'+
+    (rows.map(r=>'<tr><td>'+fmtDate(r.finishedAt)+'</td><td>'+esc(r.studentName)+'</td><td>'+esc(r.examTitle||exams[r.examId]||'—')+'</td>'+
+      '<td><span class="chip '+(r.percent>=80?'g':r.percent>=50?'y':'r')+'">'+fa(r.percent)+'٪</span></td>'+
+      '<td>'+fa(r.correct)+'</td><td>'+fa(r.wrong)+'</td><td>'+fa(r.blank)+'</td>'+
+      '<td><div class="row-actions"><button class="btn btn-ghost btn-sm" data-det="'+r.id+'">جزئیات</button>'+
+      '<button class="btn btn-danger-o btn-sm" data-rdel="'+r.id+'" title="حذف = امکان شرکت مجدد">حذف</button></div></td></tr>').join('')||
+      '<tr><td colspan="8" class="center" style="padding:26px">نتیجه‌ای ثبت نشده.</td></tr>')+
+    '</table></div>';
+    $('#rBody').querySelectorAll('[data-det]').forEach(b=>b.onclick=async()=>{
+      const r=all.find(x=>x.id===b.dataset.det);let body='';
+      const ex=await db.collection('exams').doc(r.examId).get();
+      if(ex.exists){
+        const qs=ex.data().questions;
+        body=qs.map((q,i)=>{
+          const a=(r.answers||[])[i]||0;
+          const st=a===0?'⚪ بی‌پاسخ':(a===q.correct?'🟢 صحیح':'🔴 غلط');
+          return '<div class="det-row"><b>سؤال '+fa(i+1)+'</b><span>'+st+'</span><span style="margin-right:auto">انتخاب: '+(a?fa(a):'—')+' · صحیح: '+fa(q.correct)+'</span></div>';
+        }).join('');
+      }else body='<p>آزمون حذف شده.</p>';
+      const ov=openModal('<h3 class="disp">'+esc(r.studentName)+' — '+esc(r.examTitle)+'</h3><p class="m-msg">درصد: <b>'+fa(r.percent)+'٪</b> ('+fa(r.correct)+' صحیح، '+fa(r.wrong)+' غلط، '+fa(r.blank)+' بی‌پاسخ)</p>'+body+
+        '<div class="m-actions"><button class="btn btn-ghost" id="dc">بستن</button></div>');
+      ov.querySelector('#dc').onclick=closeModal;
+    });
+    $('#rBody').querySelectorAll('[data-rdel]').forEach(b=>b.onclick=()=>confirmBox('با حذف، دانش‌آموز می‌تواند دوباره شرکت کند.',async()=>{
+      await db.collection('results').doc(b.dataset.rdel).delete();toast('حذف شد');render($('#rFilter').value);
+    }));
+  };
+  $('#rFilter').onchange=e=>render(e.target.value);
+  render('');
+}
+
+/* ── تنظیمات ── */
+function adminSettings(){
+  $('#adminContent').innerHTML='<div class="card pad narrow-card fade-up">'+
+    '<h2 class="disp" style="font-size:28px">تنظیمات</h2>'+
+    '<p style="margin:10px 0">نام کاربری مدیر: <b dir="ltr">'+esc(ADMIN_USER)+'</b></p>'+
+    '<label class="lbl">رمز جدید مدیر</label><input class="inp" id="np" type="password" dir="ltr">'+
+    '<button class="btn btn-primary" id="npb" style="margin-top:14px">💾 ذخیرهٔ رمز جدید</button>'+
+    '<hr class="sep"><p class="hint">اگر رمز را فراموش کردی، از کنسول Firebase سند settings/admin را حذف کن.</p>'+
+  '</div>';
+  $('#npb').onclick=async()=>{
+    const v=$('#np').value;
+    if(v.length<5)return toast('رمز حداقل ۵ حرف باشد','err');
+    await db.collection('settings').doc('admin').set({user:ADMIN_USER.toLowerCase(),pass:await sha(v)});
+    toast('رمز مدیر تغییر کرد ✓');$('#np').value='';
+  };
+}
+
+/* ── عمومی ── */
+document.addEventListener('click',e=>{
+  if(e.target.closest('#logoutBtn')){setSession(null);location.hash='#/login';return;}
+  const img=e.target.closest('.qimg');
+  if(img){const ov=openModal('<img class="lb-img" src="'+img.src+'">');ov.onclick=closeModal;}
+});
+(function bg(){
+  const box=document.getElementById('bg-syms');if(!box)return;
+  const glyphs=['∑','π','√','∞','∫','≈','Δ','θ','٪','×','÷','≠','∠','ƒ'];
+  for(let i=0;i<16;i++){
+    const s=document.createElement('span');
+    s.textContent=glyphs[i%glyphs.length];
+    s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';
+    s.style.fontSize=(26+Math.random()*70)+'px';
+    s.style.animationDuration=(7+Math.random()*8)+'s';
+    s.style.animationDelay=(-Math.random()*8)+'s';
+    box.appendChild(s);
+  }
+})();
+
+/* ── شروع ── */
+window._bootTimer=setTimeout(()=>{
+  if(appEl.innerHTML.includes('در حال بارگذاری')){
+    appEl.innerHTML='<div class="wrap narrow"><div class="card pad center fade-up" style="margin-top:44px">'+
+      '<p class="big-msg">⏳ ارتباط با سرور طول کشید<br><small>اینترنت یا فیلترشکن را چک کن</small></p>'+
+      '<button class="btn btn-primary" onclick="location.reload()">🔄 تلاش دوباره</button></div></div>';
+  }
+},25000);
+
+if(typeof firebase==='undefined'){
+  clearTimeout(window._bootTimer);
+  appEl.innerHTML='<div class="wrap narrow"><div class="card pad center fade-up" style="margin-top:44px">'+
+    '<h1 class="disp" style="font-size:30px">⚠️ کتابخانهٔ Firebase بارگذاری نشد</h1>'+
+    '<p style="line-height:2.2;margin:14px 0">سرور CDN در دسترس نیست.<br>اینترنت را چک کن و صفحه را رفرش کن.</p>'+
+    '<button class="btn btn-primary" onclick="location.reload()">🔄 تلاش دوباره</button></div></div>';
+}else if(NOT_SET){
+  clearTimeout(window._bootTimer);
+  appEl.innerHTML='<div class="wrap narrow"><div class="card pad fade-up" style="margin-top:44px">'+
+    '<h1 class="disp" style="font-size:32px">⚙️ یک قدم تا راه‌اندازی</h1>'+
+    '<p style="line-height:2.2;margin:10px 0">تنظیمات Firebase را در ابتدای فایل پر کن.</p></div></div>';
+}else{
+  try{
+    firebase.initializeApp(firebaseConfig);
+    db=firebase.firestore();
+    window.addEventListener('hashchange',route);
+    route();
+  }catch(e){
+    clearTimeout(window._bootTimer);
+    console.error(e);
+    appEl.innerHTML='<div class="wrap narrow"><div class="card pad center fade-up" style="margin-top:44px">'+
+      '<p class="big-msg">خطا در اتصال به Firebase 🔥<br><small>تنظیمات firebaseConfig را چک کن</small></p>'+
+      '<button class="btn btn-primary" onclick="location.reload()">🔄 تلاش دوباره</button></div></div>';
+  }
+}
+</script>
+</body>
+</html>
