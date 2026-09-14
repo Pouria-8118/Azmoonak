@@ -264,6 +264,12 @@ const examLink = id => location.origin + location.pathname + '#/exam/' + id;
 function fmtTimer(sec) { sec = Math.max(0, Math.floor(sec)); return faStr(String(Math.floor(sec / 60)).padStart(2, '0')) + ':' + faStr(String(sec % 60).padStart(2, '0')); }
 function fmtDur(ms) { const s = Math.max(0, Math.round((ms || 0) / 1000)); return faStr(String(Math.floor(s / 60)).padStart(2, '0')) + ':' + faStr(String(s % 60).padStart(2, '0')); }
 function fmtDate(ts) { try { return new Date(ts).toLocaleString('fa-IR', { dateStyle: 'short', timeStyle: 'short' }); } catch { return ''; } }
+function calcPercent(correct, wrong, total) {
+  if (!total) return 0;
+  const raw = (100 * (3 * correct - wrong)) / (3 * total);
+  // درصد بین -۳۳٪ و +۱۰۰٪ می‌تواند باشد
+  return Math.max(-34, Math.min(100, Math.round(raw)));
+}
 function toast(msg, type = 'ok') {
   const box = document.getElementById('toast'); const el = document.createElement('div');
   el.className = 'toast-item' + (type === 'err' ? ' err' : ''); el.textContent = msg; box.appendChild(el);
@@ -470,16 +476,23 @@ function drawChart(finished, sel) {
   const worst = Math.min(...finished.map(r => r.percent));
   const avg = Math.round(finished.reduce((s, r) => s + r.percent, 0) / n);
   const xStep = n === 1 ? (W - padL - padR) : (W - padL - padR) / (n - 1);
-  const yOf = p => padT + (1 - p / 100) * (H - padT - padB);
+  // 🔸 دامنهٔ نمودار: از حداقلِ (۰ یا worst) تا ۱۰۰
+  const yMin = Math.min(0, worst);
+  const yMax = 100;
+  const yOf = p => padT + (1 - (p - yMin) / (yMax - yMin)) * (H - padT - padB);
   const pts = finished.map((r, i) => ({ x: padL + i * xStep, y: yOf(r.percent), r }));
   const pathD = pts.map((p, i) => (i === 0 ? 'M' : 'L') + p.x.toFixed(1) + ' ' + p.y.toFixed(1)).join(' ');
   const areaD = pathD + ' L ' + pts[pts.length - 1].x.toFixed(1) + ' ' + (H - padB) + ' L ' + pts[0].x.toFixed(1) + ' ' + (H - padB) + ' Z';
 
   let gridLines = '';
-  [0, 25, 50, 75, 100].forEach(v => {
+  const gridValues = yMin < 0 ? [-25, 0, 25, 50, 75, 100] : [0, 25, 50, 75, 100];
+  gridValues.forEach(v => {
     const y = yOf(v);
-    gridLines += '<line class="chart-grid" x1="' + padL + '" y1="' + y + '" x2="' + (W - padR) + '" y2="' + y + '"/>';
-    gridLines += '<text x="' + (padL - 8) + '" y="' + (y + 4) + '" font-family="Vazirmatn" font-size="10" fill="#8a8fa6" text-anchor="end">' + fa(v) + '</text>';
+    const isZero = v === 0;
+    const strokeW = isZero ? 1.5 : 1;
+    const strokeColor = isZero ? '#8a8fa6' : '#ece8db';
+    gridLines += '<line x1="' + padL + '" y1="' + y + '" x2="' + (W - padR) + '" y2="' + y + '" stroke="' + strokeColor + '" stroke-width="' + strokeW + '"' + (isZero ? '' : ' stroke-dasharray="3 3"') + '/>';
+    gridLines += '<text x="' + (padL - 8) + '" y="' + (y + 4) + '" font-family="Vazirmatn" font-size="10" fill="' + (v < 0 ? '#d92c45' : '#8a8fa6') + '" text-anchor="end" font-weight="' + (v < 0 ? '800' : '400') + '">' + fa(v) + '</text>';
   });
 
   const points = pts.map(p => {
@@ -546,6 +559,10 @@ async function viewExam(id) {
     '<div class="intro-meta">' +
     '<div class="im"><b>' + fa(exam.questions.length) + '</b><span>سؤال</span></div>' +
     '<div class="im"><b>' + fa(exam.duration) + '</b><span>دقیقه</span></div>' +
+    '</div>' +
+    '<div style="background:var(--pen-soft);border:2px solid var(--pen);border-radius:12px;padding:14px 18px;margin:18px 0;font-weight:700;color:var(--pen);display:flex;align-items:center;gap:10px;font-size:14px;line-height:1.8">' +
+    '<span style="font-size:22px">⚠️</span>' +
+    '<span>این آزمون <b>نمرهٔ منفی</b> دارد. <b style="color:#b91c2e">هر ۳ پاسخ غلط، یک پاسخ صحیح را می‌سوزاند.</b> پس فقط به سؤالاتی که مطمئنی پاسخ بده!</span>' +
     '</div>' +
     '<ul class="rules">' +
     '<li>به محض زدن دکمهٔ شروع، زمان به جریان می‌افتد.</li>' +
@@ -627,14 +644,14 @@ function runExam(exam, state) {
     ov.querySelector('#fn').onclick = closeModal;
   };
   $('#submitBtn').onclick = doSubmit; $('#submitBtn2').onclick = doSubmit;
-  async function finish() {
+async function finish() {
     clearInterval(timerTick); window.onbeforeunload = null;
     let correct = 0; exam.questions.forEach((q, i) => { if (answers[i] === q.correct) correct++; });
     const blank = answers.filter(a => a === 0).length, wrong = total - correct - blank;
-    const percent = total ? Math.round(correct / total * 100) : 0;
+    const percent = calcPercent(correct, wrong, total);
     try { await api('/api/result/' + state.id, { method: 'PUT', body: JSON.stringify({ status: 'done', answers, correct, wrong, blank, total, percent, finishedAt: Date.now() }) }); } catch (e) { console.error(e); }
     location.hash = '#/result/' + state.id;
-  }
+}
   window.onbeforeunload = e => { e.preventDefault(); return ''; };
   paint();
   timerTick = setInterval(paint, 250);
@@ -654,8 +671,9 @@ async function viewResult(resId) {
     const d = await api('/api/exam/' + r.examId);
     exam = d.exam;
   } catch { }
-  const color = r.percent >= 80 ? 'var(--ok)' : r.percent >= 50 ? 'var(--amber)' : 'var(--pen)';
-  const msg = r.percent >= 85 ? 'عالی بود! آفرین 🎉' : r.percent >= 60 ? 'خوب بود 👍' : r.percent >= 35 ? 'جای کار دارد 💪' : 'نگران نباش 📚';
+  const color = r.percent >= 80 ? 'var(--ok)' : r.percent >= 50 ? 'var(--amber)' : r.percent >= 0 ? 'var(--pen)' : '#7c1d1d';
+  const msg = r.percent >= 85 ? 'عالی بود! آفرین 🎉' : r.percent >= 60 ? 'خوب بود 👍' : r.percent >= 35 ? 'جای کار دارد 💪' : r.percent >= 0 ? 'نگران نباش؛ با مرور اشتباهات بهتر می‌شوی 📚' : 'نگران نباش! نمرهٔ منفی طبیعی است؛ سؤال‌های شک‌دار را بی‌پاسخ بگذار 📚';
+  const negNote = r.percent < 0 ? '<div style="background:#fee;border:1.5px solid var(--pen);border-radius:10px;padding:10px 14px;margin-top:12px;font-size:13px;color:#7c1d1d;line-height:1.9">⚠️ <b>نمرهٔ منفی:</b> به دلیل تعداد پاسخ‌های غلط زیاد، نمرهٔ تو کمتر از صفر شده. در آزمون‌های بعدی، به سؤالاتی که مطمئن نیستی پاسخ نده.</div>' : '';
   const C = (2 * Math.PI * 62).toFixed(1);
   let html = studentTop() + '<div id="resultTop"></div><div class="wrap narrow">' +
     '<div class="card pad result-head fade-up">' +
@@ -666,6 +684,7 @@ async function viewResult(resId) {
     '<div class="r-text"><span class="intro-tag">کارنامهٔ آزمون</span>' +
     '<h2 class="disp">' + esc(r.examTitle) + '</h2><p class="r-msg">' + msg + '</p>' +
     '<div class="r-stats"><span class="chip g">✔ صحیح ' + fa(r.correct) + '</span><span class="chip r">✘ غلط ' + fa(r.wrong) + '</span><span class="chip b">⚪ بی‌پاسخ ' + fa(r.blank) + '</span><span class="chip y">⏱ ' + fmtDur(r.finishedAt - r.startedAt) + '</span></div>' +
+    negNote +
     '</div>' +
     '</div>';
   if (exam && exam.videoUrl) html += '<div class="card pad fade-up"><h2 class="disp sec-title">🎬 پاسخ ویدئویی</h2>' + videoEmbed(exam.videoUrl) + '</div>';
@@ -1003,7 +1022,7 @@ async function adminResults() {
       '<div class="stats-row">' + statCard('شرکت‌کننده', fa(n)) + statCard('میانگین', n ? fa(avg) + '٪' : '—') + statCard('بهترین', n ? fa(best) + '٪' : '—') + '</div>' +
       '<div class="card pad table-wrap"><table class="tbl"><tr><th>تاریخ</th><th>دانش‌آموز</th><th>آزمون</th><th>درصد</th><th>صحیح</th><th>غلط</th><th>بی‌پاسخ</th><th></th></tr>' +
       (rows.map(r => '<tr><td>' + fmtDate(r.finishedAt) + '</td><td>' + esc(r.studentName) + '</td><td>' + esc(r.examTitle || exams[r.examId] || '—') + '</td>' +
-        '<td><span class="chip ' + (r.percent >= 80 ? 'g' : r.percent >= 50 ? 'y' : 'r') + '">' + fa(r.percent) + '٪</span></td>' +
+        '<td><span class="chip ' + (r.percent >= 80 ? 'g' : r.percent >= 50 ? 'y' : r.percent >= 0 ? 'r' : 'r') + '" style="' + (r.percent < 0 ? 'background:#fee;color:#7c1d1d;border:1px solid var(--pen)' : '') + '">' + fa(r.percent) + '٪' + (r.percent < 0 ? ' ⚠' : '') + '</span></td>' +
         '<td>' + fa(r.correct) + '</td><td>' + fa(r.wrong) + '</td><td>' + fa(r.blank) + '</td>' +
         '<td><div class="row-actions"><button class="btn btn-ghost btn-sm" data-det="' + r.id + '">جزئیات</button>' +
         '<button class="btn btn-danger-o btn-sm" data-rdel="' + r.id + '">حذف</button></div></td></tr>').join('') ||
