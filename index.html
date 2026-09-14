@@ -172,9 +172,9 @@ video.vid{width:100%;border-radius:12px;background:#000}
 .tbl td{padding:11px 8px;border-bottom:1px solid #ece8db;vertical-align:middle}
 .tbl tr:hover td{background:#faf8f0}
 .sel-w{width:auto;min-width:200px}
-.overlay{position:fixed;inset:0;background:rgba(15,22,50,.55);backdrop-filter:blur(3px);z-index:100;display:grid;place-items:center;padding:18px;animation:fadeUp .2s}
-.modal{background:#fff;border-radius:18px;padding:26px;max-width:460px;width:100%;animation:popIn .25s cubic-bezier(.2,.9,.3,1.2)}
-.modal:has(.lb-img){max-width:min(96vw,1000px)}
+.overlay{position:fixed;inset:0;background:rgba(15,22,50,.55);backdrop-filter:blur(3px);z-index:100;display:grid;place-items:center;padding:18px;animation:fadeUp .2s;overflow-y:auto}
+.modal{background:#fff;border-radius:18px;padding:26px;max-width:540px;width:100%;animation:popIn .25s cubic-bezier(.2,.9,.3,1.2);max-height:90vh;overflow-y:auto}
+.modal:has(.lb-img){max-width:min(96vw,1000px);max-height:none;overflow:visible}
 @keyframes popIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
 .modal .disp{font-size:24px;margin-bottom:10px}
 .m-msg{line-height:2;margin-bottom:14px}
@@ -197,7 +197,7 @@ video.vid{width:100%;border-radius:12px;background:#000}
 .intro{padding:32px;margin-top:30px}
 .intro-tag{display:inline-block;background:var(--pen-soft);color:var(--pen);font-size:13px;font-weight:800;padding:4px 14px;border-radius:99px;margin-bottom:10px}
 .intro h2{font-size:34px}
-.intro-meta{display:flex;gap:26px;margin:18px 0}
+.intro-meta{display:flex;gap:26px;margin:18px 0;justify-content:center;flex-wrap:wrap}
 .im{display:flex;flex-direction:column;align-items:center;background:#f7f5ec;border:1px solid var(--line);border-radius:14px;padding:12px 26px}
 .im b{font-family:'Lalezar','Vazirmatn',sans-serif;font-size:30px}
 .im span{font-size:13px;color:var(--ink-2);font-weight:700}
@@ -208,6 +208,41 @@ video.vid{width:100%;border-radius:12px;background:#000}
 .narrow-card{max-width:480px;margin-top:30px}
 .sep{border:none;border-top:1px dashed var(--line);margin:18px 0}
 .steps{padding-right:20px;line-height:2.4}
+/* ── دکمه شناور افزودن سؤال ── */
+.fab{position:fixed;bottom:24px;left:24px;background:var(--pen);color:#fff;border:none;border-radius:50%;width:58px;height:58px;font-size:28px;font-weight:800;cursor:pointer;box-shadow:0 8px 20px -4px rgba(217,44,69,.55);z-index:30;transition:.2s;display:grid;place-items:center}
+.fab:hover{transform:translateY(-3px) scale(1.06);box-shadow:0 12px 28px -4px rgba(217,44,69,.75)}
+/* ── انتخاب چندتایی دانش‌آموزان ── */
+.stu-pick{border:1.5px solid var(--line);border-radius:12px;padding:10px;background:#fcfbf6;max-height:240px;overflow-y:auto}
+.stu-pick-row{display:flex;align-items:center;gap:10px;padding:7px 9px;border-radius:9px;cursor:pointer;transition:.12s}
+.stu-pick-row:hover{background:#f0ecde}
+.stu-pick-row input{width:18px;height:18px;accent-color:var(--ok);flex:none}
+.stu-pick-row span{flex:1;font-size:14px;font-weight:600}
+.stu-pick-row em{font-style:normal;color:#8a8fa6;font-size:12px}
+/* ── نمودار خطی ── */
+.chart-wrap{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin:18px 0}
+.chart-wrap svg{width:100%;height:260px;display:block}
+.chart-grid{stroke:#ece8db;stroke-width:1;stroke-dasharray:3 3}
+.chart-line{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.chart-area{fill:rgba(28,43,94,.08)}
+.chart-point{fill:var(--ink);stroke:#fff;stroke-width:2;cursor:pointer}
+.chart-point.best{fill:var(--ok);stroke:#fff;stroke-width:3}
+.chart-point.worst{fill:var(--pen);stroke:#fff;stroke-width:3}
+.chart-lbl{font-family:'Vazirmatn';font-size:10px;fill:var(--ink-2);text-anchor:middle;dominant-baseline:hanging}
+.chart-val{font-family:'Lalezar','Vazirmatn';font-size:12px;fill:var(--ink);text-anchor:middle}
+.chart-val.best{fill:var(--ok)}
+.chart-val.worst{fill:var(--pen)}
+.chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--ink-2);font-weight:700;justify-content:center}
+.chart-legend span{display:inline-flex;align-items:center;gap:6px}
+.chart-legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+/* ── کارت اشتباهات ── */
+.mist-card{padding:18px;margin-bottom:14px;border-right:4px solid var(--pen)}
+.mist-card.blank{border-right-color:var(--amber)}
+.mist-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.mist-meta{font-size:12px;color:var(--ink-2);font-weight:700}
+.filter-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.filter-tab{background:#fff;border:1.5px solid var(--line);color:var(--ink);padding:7px 14px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.filter-tab:hover{border-color:var(--ink)}
+.filter-tab.active{background:var(--ink);color:#fff;border-color:var(--ink)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -218,9 +253,7 @@ video.vid{width:100%;border-radius:12px;background:#000}
 <div id="toast"></div>
 <script>
 'use strict';
-/* ═══════════════════ تنظیمات — آدرس Worker ═══════════════════ */
 const API_URL = "https://azmoonak-api.p-asnaashari2007.workers.dev";
-/* ════════════════════════════════════════════════════════════ */
 
 const appEl = document.getElementById('app');
 const $ = s => document.querySelector(s);
@@ -265,11 +298,8 @@ async function api(path, opts = {}) {
   const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
   if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
   let res;
-  try {
-    res = await fetch(API_URL + path, { ...opts, headers });
-  } catch (e) {
-    throw new Error('ارتباط با سرور برقرار نشد. اینترنت را چک کن.');
-  }
+  try { res = await fetch(API_URL + path, { ...opts, headers }); }
+  catch (e) { throw new Error('ارتباط با سرور برقرار نشد.'); }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     if (res.status === 401) { authToken = ''; localStorage.removeItem('az_token'); }
@@ -324,6 +354,7 @@ async function route() {
   try {
     if (!seg.length || seg[0] === 'login') return renderLogin(query.get('next'));
     if (seg[0] === 'student') return await viewStudentHome();
+    if (seg[0] === 'mistakes') return await viewMistakes();
     if (seg[0] === 'exam') return await viewExam(seg[1]);
     if (seg[0] === 'result') return await viewResult(seg[1]);
     if (seg[0] === 'admin') return await viewAdmin(seg);
@@ -342,10 +373,10 @@ function renderLogin(next) {
     '<div class="hero-logo"><span class="tick big">√</span><h1>آزمونک</h1></div>' +
     '<p class="tag">پلتفرم آزمون‌های خصوصی ریاضی</p>' +
     '<ul class="feats">' +
-    '<li class="fade-up" style="animation-delay:.05s">⏱ تایمر دقیق، بالای صفحهٔ آزمون</li>' +
-    '<li class="fade-up" style="animation-delay:.15s">🖼 سؤالات تصویری، چهار گزینه‌ای</li>' +
-    '<li class="fade-up" style="animation-delay:.25s">📊 کارنامه و درصدِ آنی بعد از ثبت</li>' +
-    '<li class="fade-up" style="animation-delay:.35s">🎬 پاسخ ویدئویی و کلید بعد از آزمون</li>' +
+    '<li class="fade-up">⏱ تایمر دقیق، بالای صفحهٔ آزمون</li>' +
+    '<li class="fade-up" style="animation-delay:.1s">🖼 سؤالات تصویری، چهار گزینه‌ای</li>' +
+    '<li class="fade-up" style="animation-delay:.2s">📊 کارنامه و درصدِ آنی بعد از ثبت</li>' +
+    '<li class="fade-up" style="animation-delay:.3s">🎬 پاسخ ویدئویی و کلید بعد از آزمون</li>' +
     '</ul>' +
     '</div>' +
     '<form class="card login-card fade-up" id="loginForm" style="animation-delay:.15s">' +
@@ -376,6 +407,7 @@ function studentTop() {
   return '<header class="topbar"><div class="inner">' +
     '<a class="logo" href="#/student" style="text-decoration:none"><span class="tick">√</span> آزمونک</a>' +
     '<span class="spacer"></span>' +
+    '<a class="tab" href="#/mistakes">📚 مرور اشتباهات</a>' +
     '<span class="who">👤 ' + esc(session ? session.name : '') + '</span>' +
     '<button class="btn btn-outline-inv btn-sm" id="logoutBtn">خروج</button>' +
     '</div></header>';
@@ -395,14 +427,23 @@ function adminShell(active, fn) {
 
 async function viewStudentHome() {
   if (!session || session.role !== 'student') { location.hash = '#/login?next=%23%2Fstudent'; return; }
-  appEl.innerHTML = studentTop() + '<div class="wrap narrow"><div class="greet fade-up"><h2 class="disp">سلام، ' + esc(session.name) + ' 👋</h2><p>آزمون‌های تو اینجاست.</p></div><div id="exlist"><div class="loading">در حال بارگذاری…</div></div></div>';
+  appEl.innerHTML = studentTop() + '<div class="wrap narrow"><div class="greet fade-up"><h2 class="disp">سلام، ' + esc(session.name) + ' 👋</h2><p>آزمون‌های تو اینجاست.</p></div><div id="chartArea"></div><div id="exlist"><div class="loading">در حال بارگذاری…</div></div></div>';
   const [exData, resData] = await Promise.all([api('/api/exams'), api('/api/results')]);
-  const exams = exData.exams.filter(e => e.published);
+  const exams = exData.exams;
   const resMap = {};
-  resData.results.forEach(r => { resMap[r.examId] = r; });
+  const finished = [];
+  resData.results.forEach(r => {
+    resMap[r.examId] = r;
+    if (r.status === 'done') finished.push(r);
+  });
+  finished.sort((a, b) => (a.finishedAt || 0) - (b.finishedAt || 0));
+  drawChart(finished, '#chartArea');
   const list = $('#exlist');
-  if (!exams.length) { list.innerHTML = '<div class="empty">هنوز آزمونی برایت ثبت نشده است. 📭</div>'; return; }
-  list.innerHTML = exams.map((e, i) => {
+  if (!exams.length) {
+    list.innerHTML = '<div class="empty" style="margin-top:14px">هنوز آزمونی برایت ثبت نشده است. 📭</div>';
+    return;
+  }
+  list.innerHTML = '<h2 class="disp sec-title">آزمون‌های من</h2>' + exams.map((e, i) => {
     const r = resMap[e.id]; let chip, action;
     if (r && r.status === 'done') {
       chip = '<span class="chip ' + (r.percent >= 80 ? 'g' : r.percent >= 50 ? 'y' : 'r') + '">شرکت کرده — ' + fa(r.percent) + '٪</span>';
@@ -411,11 +452,72 @@ async function viewStudentHome() {
       chip = '<span class="chip y">در حال برگزاری…</span>';
       action = '<a class="btn btn-primary btn-sm" href="#/exam/' + e.id + '">▶ ادامه</a>';
     } else {
-      chip = '<span class="chip b">برگزار نشده</span>';
+      chip = '<span class="chip b">آماده</span>';
       action = '<a class="btn btn-primary btn-sm" href="#/exam/' + e.id + '">📝 شرکت</a>';
     }
     return '<div class="card stu-row fade-up" style="animation-delay:' + (i * 70) + 'ms"><div><h3>' + esc(e.title) + '</h3><div class="ex-meta">' + fa(e.questions.length) + ' سؤال · ' + fa(e.duration) + ' دقیقه</div></div><div class="stu-side">' + chip + action + '</div></div>';
   }).join('');
+}
+
+/* ── نمودار خطی پیشرفت ── */
+function drawChart(finished, sel) {
+  const host = document.querySelector(sel);
+  if (!host) return;
+  if (!finished.length) { host.innerHTML = ''; return; }
+  const W = 680, H = 260, padL = 40, padR = 30, padT = 30, padB = 50;
+  const n = finished.length;
+  const best = Math.max(...finished.map(r => r.percent));
+  const worst = Math.min(...finished.map(r => r.percent));
+  const avg = Math.round(finished.reduce((s, r) => s + r.percent, 0) / n);
+  const xStep = n === 1 ? (W - padL - padR) : (W - padL - padR) / (n - 1);
+  const yOf = p => padT + (1 - p / 100) * (H - padT - padB);
+  const pts = finished.map((r, i) => ({ x: padL + i * xStep, y: yOf(r.percent), r }));
+  const pathD = pts.map((p, i) => (i === 0 ? 'M' : 'L') + p.x.toFixed(1) + ' ' + p.y.toFixed(1)).join(' ');
+  const areaD = pathD + ' L ' + pts[pts.length - 1].x.toFixed(1) + ' ' + (H - padB) + ' L ' + pts[0].x.toFixed(1) + ' ' + (H - padB) + ' Z';
+
+  let gridLines = '';
+  [0, 25, 50, 75, 100].forEach(v => {
+    const y = yOf(v);
+    gridLines += '<line class="chart-grid" x1="' + padL + '" y1="' + y + '" x2="' + (W - padR) + '" y2="' + y + '"/>';
+    gridLines += '<text x="' + (padL - 8) + '" y="' + (y + 4) + '" font-family="Vazirmatn" font-size="10" fill="#8a8fa6" text-anchor="end">' + fa(v) + '</text>';
+  });
+
+  const points = pts.map(p => {
+    const isBest = p.r.percent === best && n > 1;
+    const isWorst = p.r.percent === worst && n > 1 && best !== worst;
+    const cls = isBest ? 'chart-point best' : (isWorst ? 'chart-point worst' : 'chart-point');
+    const valCls = isBest ? 'chart-val best' : (isWorst ? 'chart-val worst' : 'chart-val');
+    return '<circle class="' + cls + '" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="5" data-ex="' + esc(p.r.examTitle) + '" data-pc="' + p.r.percent + '" data-dt="' + fmtDate(p.r.finishedAt) + '"/>' +
+      '<text class="' + valCls + '" x="' + p.x.toFixed(1) + '" y="' + (p.y - 10).toFixed(1) + '">' + fa(p.r.percent) + '٪</text>';
+  }).join('');
+
+  const labels = pts.map((p, i) => {
+    if (n > 6 && i % Math.ceil(n / 6) !== 0 && i !== n - 1) return '';
+    return '<text class="chart-lbl" x="' + p.x.toFixed(1) + '" y="' + (H - padB + 16) + '">' + (i + 1) + '</text>';
+  }).join('');
+
+  host.innerHTML = '<div class="chart-wrap fade-up">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px">' +
+    '<h3 class="disp" style="font-size:22px">📈 روند پیشرفت</h3>' +
+    '<div style="font-size:13px;color:var(--ink-2);font-weight:700">میانگین: <b>' + fa(avg) + '٪</b> · بهترین: <b style="color:var(--ok)">' + fa(best) + '٪</b></div>' +
+    '</div>' +
+    '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid meet">' +
+    gridLines +
+    '<path class="chart-area" d="' + areaD + '"/>' +
+    '<path class="chart-line" d="' + pathD + '"/>' +
+    points +
+    labels +
+    '</svg>' +
+    '<div class="chart-legend">' +
+    '<span><i style="background:var(--ink)"></i>درصد آزمون</span>' +
+    (n > 1 ? '<span><i style="background:var(--ok)"></i>بهترین</span><span><i style="background:var(--pen)"></i>نیاز به تلاش بیشتر</span>' : '') +
+    '</div>' +
+    '<p class="hint">برای دیدن جزئیات هر آزمون، روی نقاط کلیک کن.</p>' +
+    '</div>';
+
+  host.querySelectorAll('.chart-point').forEach(c => {
+    c.onclick = () => toast('📌 ' + c.dataset.ex + ' — ' + fa(+c.dataset.pc) + '٪ — ' + c.dataset.dt);
+  });
 }
 
 async function viewExam(id) {
@@ -426,7 +528,7 @@ async function viewExam(id) {
   try {
     const data = await api('/api/exam/' + id);
     exam = data.exam;
-  } catch { messagePage('آزمون پیدا نشد.'); return; }
+  } catch (err) { messagePage(err.message || 'آزمون پیدا نشد.'); return; }
   if (!exam.published) { messagePage('این آزمون هنوز فعال نشده.'); return; }
   let existing = null;
   try {
@@ -437,13 +539,13 @@ async function viewExam(id) {
     if (existing.status === 'done') { location.replace('#/result/' + existing.id); return; }
     if (existing.status === 'active') { runExam(exam, existing); return; }
   }
+  // 🔸 حذف نمایش «۴ گزینه» - فقط سؤال و زمان
   appEl.innerHTML = studentTop() + '<div class="wrap narrow"><div class="card intro fade-up">' +
-    '<span class="intro-tag">آزمون تستی · چهار گزینه‌ای</span>' +
+    '<span class="intro-tag">آزمون تستی</span>' +
     '<h2 class="disp">' + esc(exam.title) + '</h2>' +
     '<div class="intro-meta">' +
     '<div class="im"><b>' + fa(exam.questions.length) + '</b><span>سؤال</span></div>' +
     '<div class="im"><b>' + fa(exam.duration) + '</b><span>دقیقه</span></div>' +
-    '<div class="im"><b>۴</b><span>گزینه</span></div>' +
     '</div>' +
     '<ul class="rules">' +
     '<li>به محض زدن دکمهٔ شروع، زمان به جریان می‌افتد.</li>' +
@@ -555,7 +657,7 @@ async function viewResult(resId) {
   const color = r.percent >= 80 ? 'var(--ok)' : r.percent >= 50 ? 'var(--amber)' : 'var(--pen)';
   const msg = r.percent >= 85 ? 'عالی بود! آفرین 🎉' : r.percent >= 60 ? 'خوب بود 👍' : r.percent >= 35 ? 'جای کار دارد 💪' : 'نگران نباش 📚';
   const C = (2 * Math.PI * 62).toFixed(1);
-  let html = studentTop() + '<div class="wrap narrow">' +
+  let html = studentTop() + '<div id="resultTop"></div><div class="wrap narrow">' +
     '<div class="card pad result-head fade-up">' +
     '<div class="gauge"><svg width="170" height="170" viewBox="0 0 170 170">' +
     '<circle cx="85" cy="85" r="62" fill="none" stroke="#ece7d8" stroke-width="13"/>' +
@@ -582,9 +684,63 @@ async function viewResult(resId) {
         }).join('') + '</div></div>';
     }).join('');
   } else html += '<div class="card pad" style="margin-top:16px">آزمون حذف شده.</div>';
-  html += '<div class="center" style="margin:26px 0"><a class="btn btn-primary" href="#/student">بازگشت</a></div></div>';
+  html += '<div class="center" style="margin:26px 0"><a class="btn btn-primary" href="#/student">بازگشت به خانه</a></div></div>';
   appEl.innerHTML = html;
+  // 🔸 اسکرول به بالای صفحه بعد از رندر کارنامه
+  const topEl = document.getElementById('resultTop');
+  if (topEl) topEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+  window.scrollTo({ top: 0, behavior: 'auto' });
   requestAnimationFrame(() => requestAnimationFrame(() => { const g = $('#gval'); if (g) g.style.strokeDashoffset = (C * (1 - r.percent / 100)).toFixed(1); }));
+}
+
+/* ── صفحهٔ مرور اشتباهات ── */
+async function viewMistakes() {
+  if (!session || session.role !== 'student') { location.hash = '#/login'; return; }
+  appEl.innerHTML = studentTop() + '<div class="wrap narrow"><div class="greet fade-up"><h2 class="disp">📚 مرور اشتباهات</h2><p>سؤالاتی که در آزمون‌ها غلط زدی یا بی‌پاسخ گذاشتی؛ برای تمرین دوباره.</p></div><div id="mistFilter" class="filter-tabs"></div><div id="mistList"><div class="loading">در حال بارگذاری…</div></div></div>';
+  const [exData, resData] = await Promise.all([api('/api/exams'), api('/api/results')]);
+  const exams = {}; exData.exams.forEach(e => exams[e.id] = e);
+  const mistakes = [];
+  resData.results.forEach(r => {
+    if (r.status !== 'done') return;
+    const exam = exams[r.examId]; if (!exam) return;
+    exam.questions.forEach((q, i) => {
+      const a = (r.answers || [])[i] || 0;
+      if (a === q.correct) return;
+      mistakes.push({ examId: r.examId, examTitle: r.examTitle, qi: i, q, a, finishedAt: r.finishedAt, percent: r.percent, status: a === 0 ? 'blank' : 'wrong' });
+    });
+  });
+  mistakes.sort((a, b) => (b.finishedAt || 0) - (a.finishedAt || 0));
+  const filterEl = $('#mistFilter');
+  const nWrong = mistakes.filter(m => m.status === 'wrong').length;
+  const nBlank = mistakes.filter(m => m.status === 'blank').length;
+  filterEl.innerHTML = '<button class="filter-tab active" data-f="all">همه (' + fa(mistakes.length) + ')</button>' +
+    '<button class="filter-tab" data-f="wrong">✘ غلط (' + fa(nWrong) + ')</button>' +
+    '<button class="filter-tab" data-f="blank">⚪ بی‌پاسخ (' + fa(nBlank) + ')</button>';
+  const render = f => {
+    const list = $('#mistList');
+    const rows = mistakes.filter(m => f === 'all' || m.status === f);
+    if (!rows.length) { list.innerHTML = '<div class="empty">🎉 هیچ سؤال اشتباه یا بی‌پاسخی نداری!</div>'; return; }
+    list.innerHTML = rows.map((m, i) => {
+      const stChip = m.status === 'wrong' ? '<span class="chip r">✘ غلط</span>' : '<span class="chip y">⚪ بی‌پاسخ</span>';
+      return '<div class="card pad mist-card ' + m.status + ' fade-up" style="animation-delay:' + Math.min(i * 50, 600) + 'ms">' +
+        '<div class="mist-head"><div><b>' + esc(m.examTitle) + '</b> · سؤال ' + fa(m.qi + 1) +
+        '<div class="mist-meta">' + fmtDate(m.finishedAt) + ' · درصد آزمون: ' + fa(m.percent) + '٪</div></div><div>' + stChip + '</div></div>' +
+        '<img class="qimg" src="' + m.q.img + '" loading="lazy" onerror="this.style.display=\'none\'">' +
+        '<div class="opts">' + [1, 2, 3, 4].map(o => {
+          let cls = '', tag = '';
+          if (o === m.q.correct) { cls = 'good'; tag = '<span class="tag t-ok">' + (m.a === o ? 'انتخاب تو ✓' : 'پاسخ صحیح') + '</span>'; }
+          else if (o === m.a) { cls = 'bad'; tag = '<span class="tag t-bad">انتخاب تو</span>'; }
+          return '<div class="opt ro ' + cls + '"><span class="n">' + fa(o) + '</span><span>گزینهٔ ' + fa(o) + '</span>' + tag + '</div>';
+        }).join('') + '</div>' +
+        '</div>';
+    }).join('');
+  };
+  filterEl.querySelectorAll('.filter-tab').forEach(b => b.onclick = () => {
+    filterEl.querySelectorAll('.filter-tab').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    render(b.dataset.f);
+  });
+  render('all');
 }
 
 async function viewAdmin(seg) {
@@ -602,11 +758,12 @@ const statCard = (l, v) => '<div class="stat fade-up"><b>' + v + '</b><span>' + 
 
 async function adminExamsList() {
   const box = $('#adminContent');
-  const [exData, resData] = await Promise.all([api('/api/exams'), api('/api/results')]);
+  const [exData, resData, stuData] = await Promise.all([api('/api/exams'), api('/api/results'), api('/api/students')]);
   const stats = {}; resData.results.filter(r => r.status === 'done').forEach(r => { const s = stats[r.examId] || (stats[r.examId] = { n: 0, sum: 0 }); s.n++; s.sum += r.percent; });
   const finished = resData.results.filter(r => r.status === 'done');
   let totalP = 0; finished.forEach(r => totalP += r.percent);
   const exams = exData.exams;
+  const studentMap = {}; stuData.students.forEach(s => studentMap[s.id] = s);
   box.innerHTML =
     '<div class="stats-row" style="margin-top:8px">' +
     statCard('آزمون‌ها', fa(exams.length)) +
@@ -617,9 +774,13 @@ async function adminExamsList() {
     (exams.length ? '' : '<div class="empty">هنوز آزمونی نساخته‌ای.</div>') +
     exams.map(e => {
       const s = stats[e.id] || { n: 0, sum: 0 };
+      const allowed = e.allowedStudents || [];
+      const allowedNames = allowed.map(id => studentMap[id] ? studentMap[id].name : id).slice(0, 3).join('، ');
+      const accessText = allowed.length === 0 ? '🌐 همهٔ دانش‌آموزان' : '👥 ' + fa(allowed.length) + ' دانش‌آموز' + (allowedNames ? ' (' + esc(allowedNames) + (allowed.length > 3 ? '…' : '') + ')' : '');
       return '<div class="card exam-row fade-up">' +
         '<div class="ex-info"><h3>' + esc(e.title) + '</h3>' +
         '<div class="ex-meta">' + fa(e.questions.length) + ' سؤال · ' + fa(e.duration) + ' دقیقه · ' + fmtDate(e.createdAt) + (e.videoUrl ? ' · 🎬 ویدیو' : '') + '</div>' +
+        '<div class="ex-meta">' + accessText + '</div>' +
         '<div class="ex-link"><code dir="ltr">' + examLink(e.id) + '</code></div></div>' +
         '<div class="ex-side">' +
         '<div class="ex-stats">' + (s.n ? fa(s.n) + ' شرکت‌کننده · میانگین ' + fa(Math.round(s.sum / s.n)) + '٪' : 'هنوز کسی شرکت نکرده') + '</div>' +
@@ -640,19 +801,27 @@ async function adminExamsList() {
   }));
 }
 
-let draft = null, editingId = null;
+let draft = null, editingId = null, allStudents = [];
 async function adminEditor(id) {
   editingId = id || null;
+  try {
+    const d = await api('/api/students');
+    allStudents = d.students;
+  } catch { allStudents = []; }
   if (id) {
     try {
       const d = await api('/api/exam/' + id);
       const e = d.exam;
-      draft = { title: e.title, duration: e.duration, videoUrl: e.videoUrl || '', published: !!e.published, questions: e.questions.map(q => ({ img: q.img, correct: q.correct })) };
+      draft = { title: e.title, duration: e.duration, videoUrl: e.videoUrl || '', published: !!e.published, questions: e.questions.map(q => ({ img: q.img, correct: q.correct })), allowedStudents: e.allowedStudents || [] };
     } catch { toast('آزمون پیدا نشد', 'err'); location.hash = '#/admin'; return; }
-  } else draft = { title: '', duration: 30, videoUrl: '', published: true, questions: [] };
+  } else draft = { title: '', duration: 30, videoUrl: '', published: true, questions: [], allowedStudents: [] };
   drawEditor();
 }
 function drawEditor() {
+  const stuPick = allStudents.length ? allStudents.map(s => {
+    const checked = draft.allowedStudents.includes(s.id);
+    return '<label class="stu-pick-row"><input type="checkbox" value="' + esc(s.id) + '" ' + (checked ? 'checked' : '') + '><span>' + esc(s.name) + '</span><em dir="ltr">' + esc(s.username) + '</em></label>';
+  }).join('') : '<p class="hint" style="text-align:center;padding:12px">هنوز دانش‌آموزی نساخته‌ای.</p>';
   $('#adminContent').innerHTML =
     '<div class="card pad fade-up"><h2 class="disp" style="font-size:28px">' + (editingId ? 'ویرایش آزمون' : 'ساخت آزمون جدید') + '</h2>' +
     '<div class="form-grid3">' +
@@ -661,14 +830,28 @@ function drawEditor() {
     '<div class="span2"><label class="lbl">لینک پاسخ ویدئویی (اختیاری)</label><input id="e-video" dir="ltr" class="inp" value="' + esc(draft.videoUrl) + '" placeholder="https://www.aparat.com/v/xxxxx">' +
     '<p class="hint">لینک آپارات یا یوتیوب.</p></div>' +
     '<div><label class="lbl">وضعیت</label><label class="switch"><input type="checkbox" id="e-pub" ' + (draft.published ? 'checked' : '') + '><span></span><em>فعال</em></label></div>' +
+    '<div class="span2"><label class="lbl">دسترسی دانش‌آموزان 🔐</label>' +
+    '<div class="stu-pick" id="stuPick">' + stuPick + '</div>' +
+    '<p class="hint">اگر هیچ‌کس را انتخاب نکنی، <b>همهٔ دانش‌آموزان</b> دسترسی دارند. در غیر این صورت فقط دانش‌آموزان انتخاب‌شده آزمون را می‌بینند.</p></div>' +
     '</div></div>' +
-    '<div class="toolbar"><h2 class="disp">سؤال‌ها</h2><button class="btn btn-primary" id="addQ">➕ افزودن سؤال</button></div>' +
+    '<div class="toolbar"><h2 class="disp">سؤال‌ها</h2></div>' +
     '<div id="qlist"></div>' +
     '<div class="card pad save-bar fade-up">' +
     '<button class="btn btn-primary big" id="saveExam">' + (editingId ? '💾 ذخیرهٔ تغییرات' : '💾 ساخت آزمون') + '</button>' +
     '<div id="linkBox"></div>' +
     '</div>';
-  $('#addQ').onclick = () => { draft.questions.push({ img: '', correct: 1 }); drawQList(); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); };
+  // 🔸 دکمه شناور افزودن سؤال
+  let fab = document.getElementById('qFab');
+  if (!fab) {
+    fab = document.createElement('button');
+    fab.id = 'qFab';
+    fab.className = 'fab';
+    fab.title = 'افزودن سؤال جدید';
+    fab.textContent = '+';
+    document.body.appendChild(fab);
+  }
+  fab.style.display = 'grid';
+  fab.onclick = () => { draft.questions.push({ img: '', correct: 1 }); drawQList(); setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 50); };
   $('#saveExam').onclick = saveExam;
   if (editingId) showLink();
   drawQList();
@@ -693,7 +876,7 @@ function qItemHTML(q, i) {
 }
 function drawQList() {
   const box = $('#qlist');
-  if (!draft.questions.length) { box.innerHTML = '<div class="empty" style="margin-bottom:14px">هنوز سؤالی اضافه نکرده‌ای.</div>'; return; }
+  if (!draft.questions.length) { box.innerHTML = '<div class="empty" style="margin-bottom:14px">هنوز سؤالی اضافه نکرده‌ای.<br>از دکمهٔ قرمز پایین صفحه استفاده کن +</div>'; return; }
   box.innerHTML = draft.questions.map((q, i) => qItemHTML(q, i)).join('');
   box.querySelectorAll('.q-item').forEach(el => {
     const i = +el.dataset.i, q = draft.questions[i];
@@ -728,6 +911,10 @@ async function saveExam() {
   draft.duration = +$('#e-duration').value || 0;
   draft.videoUrl = $('#e-video').value.trim();
   draft.published = $('#e-pub').checked;
+  // خواندن دانش‌آموزان انتخاب‌شده
+  const checked = [];
+  document.querySelectorAll('#stuPick input[type=checkbox]:checked').forEach(cb => checked.push(cb.value));
+  draft.allowedStudents = checked;
   if (!draft.title) return toast('عنوان آزمون را بنویس', 'err');
   if (!draft.duration) return toast('مدت را مشخص کن', 'err');
   if (!draft.questions.length) return toast('حداقل یک سؤال', 'err');
@@ -862,10 +1049,22 @@ function adminSettings() {
 }
 
 document.addEventListener('click', e => {
-  if (e.target.closest('#logoutBtn')) { setSession(null); location.hash = '#/login'; return; }
+  if (e.target.closest('#logoutBtn')) {
+    const fab = document.getElementById('qFab'); if (fab) fab.style.display = 'none';
+    setSession(null); location.hash = '#/login'; return;
+  }
   const img = e.target.closest('.qimg');
   if (img) { const ov = openModal('<img class="lb-img" src="' + img.src + '">'); ov.onclick = closeModal; }
 });
+// پنهان کردن FAB وقتی در صفحهٔ ادمین-ادیتور نیستیم
+const hideFabOnRoute = () => {
+  const fab = document.getElementById('qFab');
+  if (!fab) return;
+  const h = location.hash || '#/';
+  const isAdminEditor = h.startsWith('#/admin/edit/') || h === '#/admin/new';
+  fab.style.display = isAdminEditor ? 'grid' : 'none';
+};
+window.addEventListener('hashchange', () => { hideFabOnRoute(); route(); });
 (function bg() {
   const box = document.getElementById('bg-syms'); if (!box) return;
   const glyphs = ['∑', 'π', '√', '∞', '∫', '≈', 'Δ', 'θ', '٪', '×', '÷', '≠', '∠', 'ƒ'];
@@ -880,7 +1079,7 @@ document.addEventListener('click', e => {
   }
 })();
 
-window.addEventListener('hashchange', route);
+hideFabOnRoute();
 route();
 </script>
 </body>
