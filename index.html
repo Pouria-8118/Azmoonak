@@ -6,35 +6,20 @@
 <meta name="theme-color" content="#1c2b5e">
 <title>آزمونک | پلتفرم آزمون خصوصی ریاضی</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23d92c45'/%3E%3Cpath d='M16 34l10 12 22-28' stroke='%23fff' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
-<!-- ═══ فونت‌ها از CDN جایگزین (بدون گوگل) ═══ -->
 <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
 <style>
-@font-face{
-  font-family:'Lalezar';
-  src:url('https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/lalezar/Lalezar-Regular.ttf') format('truetype');
-  font-display:swap;
-}
+@font-face{font-family:'Lalezar';src:url('https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/lalezar/Lalezar-Regular.ttf') format('truetype');font-display:swap}
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --paper:#f6f3ea;--grid:rgba(43,72,140,.075);
-  --ink:#1c2b5e;--ink-2:#33427e;--line:#ddd6c4;
-  --pen:#d92c45;--pen-soft:#fdeef0;
-  --ok:#178f56;--ok-soft:#e4f5ec;--amber:#d98a10;
-}
+:root{--paper:#f6f3ea;--grid:rgba(43,72,140,.075);--ink:#1c2b5e;--ink-2:#33427e;--line:#ddd6c4;--pen:#d92c45;--pen-soft:#fdeef0;--ok:#178f56;--ok-soft:#e4f5ec;--amber:#d98a10}
 html{scroll-behavior:smooth}
-body{
-  font-family:'Vazirmatn',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;color:var(--ink);min-height:100vh;
-  background-color:var(--paper);
-  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
-  background-size:26px 26px;
-}
+body{font-family:'Vazirmatn',system-ui,sans-serif;color:var(--ink);min-height:100vh;background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px}
 .margin-line{position:fixed;top:0;bottom:0;right:34px;width:2px;background:rgba(217,44,69,.16);pointer-events:none;z-index:0}
 #bg-syms{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-#bg-syms span{position:absolute;font-family:Lalezar,color;color:var(--ink);opacity:.05;animation:floaty 9s ease-in-out infinite alternate}
+#bg-syms span{position:absolute;font-family:Lalezar;color:var(--ink);opacity:.05;animation:floaty 9s ease-in-out infinite alternate}
 @keyframes floaty{from{transform:translateY(-14px) rotate(-6deg)}to{transform:translateY(16px) rotate(7deg)}}
 #app{position:relative;z-index:1}
 a{color:var(--ink-2)}
-.disp{font-family:'Lalezar','Vazirmatn',system-ui,sans-serif;font-weight:400}
+.disp{font-family:'Lalezar','Vazirmatn',sans-serif;font-weight:400}
 .wrap{max-width:1100px;margin:0 auto;padding:26px 18px}
 .wrap.narrow{max-width:780px}
 .card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 1px 2px rgba(30,40,80,.05),0 12px 30px -20px rgba(30,40,80,.3)}
@@ -231,778 +216,672 @@ video.vid{width:100%;border-radius:12px;background:#000}
 <div id="bg-syms" aria-hidden="true"></div>
 <main id="app"><div class="loading">در حال بارگذاری…</div></main>
 <div id="toast"></div>
-
-<!-- ═══ Firebase SDK از CDN جایگزین + fallback ═══ -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script>if(typeof firebase==='undefined')document.write('<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"><\/script>')</script>
-<script>if(typeof firebase==='undefined')document.write('<script src="https://unpkg.com/firebase@10.12.2/firebase-app-compat.js"><\/script>')</script>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script>if(typeof firebase==='undefined'||!firebase.firestore)document.write('<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"><\/script>')</script>
-<script>if(typeof firebase==='undefined'||!firebase.firestore)document.write('<script src="https://unpkg.com/firebase@10.12.2/firebase-firestore-compat.js"><\/script>')</script>
 <script>
 'use strict';
-/* ═══════════════════ تنظیمات ═══════════════════ */
-const firebaseConfig = {
-  apiKey: "AIzaSyAO6Ekph48lTPKHVM9nZh6BUsS_4nIKr_4",
-  authDomain: "azmoonak.firebaseapp.com",
-  projectId: "azmoonak",
-  storageBucket: "azmoonak.firebasestorage.app",
-  messagingSenderId: "658188589200",
-  appId: "1:658188589200:web:f553121873772442482015"
-};
-const ADMIN_USER = "Pouria";
-const ADMIN_PASS = "Pouria123";
-const SALT = "azmunak-v1";
-/* ═══════════════════════════════════════════════ */
+/* ═══════════════════ تنظیمات — آدرس Worker ═══════════════════ */
+const API_URL = "https://azmoonak-api.p-asnaashari2007.workers.dev";
+/* ════════════════════════════════════════════════════════════ */
 
-const NOT_SET = !firebaseConfig.apiKey || firebaseConfig.apiKey.indexOf('YOUR_')===0;
-let db = null;
-
-/* ── ابزارها ── */
 const appEl = document.getElementById('app');
 const $ = s => document.querySelector(s);
-const fa = n => Number(n??0).toLocaleString('fa-IR');
-const faStr = s => String(s).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
-const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const uid = (n=8)=>{const c='abcdefghjkmnpqrstuvwxyz23456789';let s='';for(let i=0;i<n;i++)s+=c[Math.floor(Math.random()*c.length)];return s;};
-const examLink = id => location.origin+location.pathname+'#/exam/'+id;
-function fmtTimer(sec){sec=Math.max(0,Math.floor(sec));return faStr(String(Math.floor(sec/60)).padStart(2,'0'))+':'+faStr(String(sec%60).padStart(2,'0'));}
-function fmtDur(ms){const s=Math.max(0,Math.round((ms||0)/1000));return faStr(String(Math.floor(s/60)).padStart(2,'0'))+':'+faStr(String(s%60).padStart(2,'0'));}
-function fmtDate(ts){try{return new Date(ts).toLocaleString('fa-IR',{dateStyle:'short',timeStyle:'short'});}catch(e){return '';}}
-async function sha(t){
-  const str=SALT+':'+t;
-  try{
-    const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
-    return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
-  }catch(e){
-    let h1=0xdeadbeef,h2=0x41c6ce57;
-    for(let i=0;i<str.length;i++){const ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}
-    h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
-    h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
-    return (h2>>>0).toString(16).padStart(8,'0')+(h1>>>0).toString(16).padStart(8,'0');
-  }
+const fa = n => Number(n ?? 0).toLocaleString('fa-IR');
+const faStr = s => String(s).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const examLink = id => location.origin + location.pathname + '#/exam/' + id;
+function fmtTimer(sec) { sec = Math.max(0, Math.floor(sec)); return faStr(String(Math.floor(sec / 60)).padStart(2, '0')) + ':' + faStr(String(sec % 60).padStart(2, '0')); }
+function fmtDur(ms) { const s = Math.max(0, Math.round((ms || 0) / 1000)); return faStr(String(Math.floor(s / 60)).padStart(2, '0')) + ':' + faStr(String(s % 60).padStart(2, '0')); }
+function fmtDate(ts) { try { return new Date(ts).toLocaleString('fa-IR', { dateStyle: 'short', timeStyle: 'short' }); } catch { return ''; } }
+function toast(msg, type = 'ok') {
+  const box = document.getElementById('toast'); const el = document.createElement('div');
+  el.className = 'toast-item' + (type === 'err' ? ' err' : ''); el.textContent = msg; box.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = '.4s'; setTimeout(() => el.remove(), 420); }, 2800);
 }
-function toast(msg,type='ok'){
-  const box=document.getElementById('toast');const el=document.createElement('div');
-  el.className='toast-item'+(type==='err'?' err':'');el.textContent=msg;box.appendChild(el);
-  setTimeout(()=>{el.style.opacity='0';el.style.transition='.4s';setTimeout(()=>el.remove(),420);},2800);
+function copyText(t) {
+  const legacy = () => { const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); toast('کپی شد ✓'); } catch { toast('کپی نشد', 'err'); } ta.remove(); };
+  if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(() => toast('کپی شد ✓')).catch(legacy); } else legacy();
 }
-function copyText(t){
-  const legacy=()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('کپی شد ✓');}catch(e){toast('کپی نشد','err');}ta.remove();};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(()=>toast('کپی شد ✓')).catch(legacy);}else legacy();
-}
-function fileToDataURL(file,maxW=800){
-  return new Promise((res,rej)=>{
-    const img=new Image(),url=URL.createObjectURL(file);
-    img.onload=()=>{let w=img.width,h=img.height;if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
-      const c=document.createElement('canvas');c.width=w;c.height=h;
-      c.getContext('2d').drawImage(img,0,0,w,h);URL.revokeObjectURL(url);
-      res(c.toDataURL('image/jpeg',0.75));};
-    img.onerror=rej;img.src=url;
+function fileToDataURL(file, maxW = 800) {
+  return new Promise((res, rej) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => { let w = img.width, h = img.height; if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h); URL.revokeObjectURL(url);
+      res(c.toDataURL('image/jpeg', 0.75)); };
+    img.onerror = rej; img.src = url;
   });
 }
-async function uploadImage(dataUrl){return dataUrl;}
-function videoEmbed(url){
-  if(!url)return '';url=url.trim();
-  const mAp=url.match(/aparat\.com\/v\/([A-Za-z0-9]+)/i);
-  if(mAp)return '<div class="video-wrap"><iframe src="https://www.aparat.com/video/video/embed/videohash/'+mAp[1]+'/vt/frame" allowfullscreen></iframe></div>';
-  const mYt=url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([\w-]{6,})/i);
-  if(mYt)return '<div class="video-wrap"><iframe src="https://www.youtube.com/embed/'+mYt[1]+'" allowfullscreen></iframe></div>';
-  if(/\.(mp4|webm|m4v|mov)(\?|$)/i.test(url))return '<video class="vid" src="'+esc(url)+'" controls></video>';
-  return '<div class="video-wrap"><iframe src="'+esc(url)+'" allowfullscreen></iframe></div>';
+function videoEmbed(url) {
+  if (!url) return ''; url = url.trim();
+  const mAp = url.match(/aparat\.com\/v\/([A-Za-z0-9]+)/i);
+  if (mAp) return '<div class="video-wrap"><iframe src="https://www.aparat.com/video/video/embed/videohash/' + mAp[1] + '/vt/frame" allowfullscreen></iframe></div>';
+  const mYt = url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([\w-]{6,})/i);
+  if (mYt) return '<div class="video-wrap"><iframe src="https://www.youtube.com/embed/' + mYt[1] + '" allowfullscreen></iframe></div>';
+  if (/\.(mp4|webm|m4v|mov)(\?|$)/i.test(url)) return '<video class="vid" src="' + esc(url) + '" controls></video>';
+  return '<div class="video-wrap"><iframe src="' + esc(url) + '" allowfullscreen></iframe></div>';
 }
 
-/* ── نشست و روتر ── */
-let session=null;try{session=JSON.parse(localStorage.getItem('az_session'));}catch(e){}
-function setSession(s){session=s;s?localStorage.setItem('az_session',JSON.stringify(s)):localStorage.removeItem('az_session');}
-let timerTick=null;
-let _bootCleared=false;
+let authToken = localStorage.getItem('az_token') || '';
+async function api(path, opts = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+  if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
+  let res;
+  try {
+    res = await fetch(API_URL + path, { ...opts, headers });
+  } catch (e) {
+    throw new Error('ارتباط با سرور برقرار نشد. اینترنت را چک کن.');
+  }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    if (res.status === 401) { authToken = ''; localStorage.removeItem('az_token'); }
+    throw new Error(data.error || 'خطا در سرور');
+  }
+  return data;
+}
 
-function openModal(html){
+let session = null;
+try { session = JSON.parse(localStorage.getItem('az_session')); } catch {}
+function setSession(s, token) {
+  session = s;
+  if (token) { authToken = token; localStorage.setItem('az_token', token); }
+  s ? localStorage.setItem('az_session', JSON.stringify(s)) : (localStorage.removeItem('az_session'), localStorage.removeItem('az_token'), authToken = '');
+}
+let timerTick = null;
+
+function openModal(html) {
   closeModal();
-  const ov=document.createElement('div');ov.className='overlay';
-  ov.innerHTML='<div class="modal">'+html+'</div>';
+  const ov = document.createElement('div'); ov.className = 'overlay';
+  ov.innerHTML = '<div class="modal">' + html + '</div>';
   document.body.appendChild(ov);
-  ov.addEventListener('click',e=>{if(e.target===ov)closeModal();});
+  ov.addEventListener('click', e => { if (e.target === ov) closeModal(); });
   return ov;
 }
-function closeModal(){document.querySelectorAll('.overlay').forEach(o=>o.remove());}
-function confirmBox(msg,onYes,yes='بله، مطمئنم'){
-  const ov=openModal('<p class="m-msg">'+msg+'</p><div class="m-actions"><button class="btn btn-danger" id="my">'+yes+'</button><button class="btn btn-ghost" id="mn">انصراف</button></div>');
-  ov.querySelector('#my').onclick=()=>{closeModal();onYes();};
-  ov.querySelector('#mn').onclick=closeModal;
+function closeModal() { document.querySelectorAll('.overlay').forEach(o => o.remove()); }
+function confirmBox(msg, onYes, yes = 'بله، مطمئنم') {
+  const ov = openModal('<p class="m-msg">' + msg + '</p><div class="m-actions"><button class="btn btn-danger" id="my">' + yes + '</button><button class="btn btn-ghost" id="mn">انصراف</button></div>');
+  ov.querySelector('#my').onclick = () => { closeModal(); onYes(); };
+  ov.querySelector('#mn').onclick = closeModal;
 }
-function promptBox(title,label,onOk){
-  const ov=openModal('<h3 class="disp">'+title+'</h3><label class="lbl">'+label+'</label><input class="inp" id="pv"><div class="m-actions"><button class="btn btn-primary" id="po">تأیید</button><button class="btn btn-ghost" id="pc">انصراف</button></div>');
-  const inp=ov.querySelector('#pv');inp.focus();
-  const go=()=>{const v=inp.value.trim();if(!v)return;closeModal();onOk(v);};
-  ov.querySelector('#po').onclick=go;
-  inp.onkeydown=e=>{if(e.key==='Enter')go();};
-  ov.querySelector('#pc').onclick=closeModal;
+function promptBox(title, label, onOk) {
+  const ov = openModal('<h3 class="disp">' + title + '</h3><label class="lbl">' + label + '</label><input class="inp" id="pv"><div class="m-actions"><button class="btn btn-primary" id="po">تأیید</button><button class="btn btn-ghost" id="pc">انصراف</button></div>');
+  const inp = ov.querySelector('#pv'); inp.focus();
+  const go = () => { const v = inp.value.trim(); if (!v) return; closeModal(); onOk(v); };
+  ov.querySelector('#po').onclick = go;
+  inp.onkeydown = e => { if (e.key === 'Enter') go(); };
+  ov.querySelector('#pc').onclick = closeModal;
 }
-function messagePage(txt){
-  const top=(session&&session.role==='student')?studentTop():'';
-  appEl.innerHTML=top+'<div class="wrap narrow"><div class="card pad center fade-up" style="margin-top:44px"><p class="big-msg">'+txt+'</p><a class="btn btn-primary" href="#/">صفحهٔ ورود</a></div></div>';
+function messagePage(txt) {
+  const top = (session && session.role === 'student') ? studentTop() : '';
+  appEl.innerHTML = top + '<div class="wrap narrow"><div class="card pad center fade-up" style="margin-top:44px"><p class="big-msg">' + txt + '</p><a class="btn btn-primary" href="#/">صفحهٔ ورود</a></div></div>';
 }
 
-async function route(){
-  if(!_bootCleared){clearTimeout(window._bootTimer);_bootCleared=true;}
-  clearInterval(timerTick);timerTick=null;window.onbeforeunload=null;
-  const raw=(location.hash||'#/').slice(2);
-  const qi=raw.indexOf('?');
-  const path=qi>=0?raw.slice(0,qi):raw;
-  const query=new URLSearchParams(qi>=0?raw.slice(qi+1):'');
-  const seg=path.split('/').filter(Boolean);
-  try{
-    if(!seg.length||seg[0]==='login')return renderLogin(query.get('next'));
-    if(seg[0]==='student')return await viewStudentHome();
-    if(seg[0]==='exam')return await viewExam(seg[1]);
-    if(seg[0]==='result')return await viewResult(seg[1]);
-    if(seg[0]==='admin')return await viewAdmin(seg);
-    location.hash='#/';
-  }catch(err){
+async function route() {
+  clearInterval(timerTick); timerTick = null; window.onbeforeunload = null;
+  const raw = (location.hash || '#/').slice(2);
+  const qi = raw.indexOf('?');
+  const path = qi >= 0 ? raw.slice(0, qi) : raw;
+  const query = new URLSearchParams(qi >= 0 ? raw.slice(qi + 1) : '');
+  const seg = path.split('/').filter(Boolean);
+  try {
+    if (!seg.length || seg[0] === 'login') return renderLogin(query.get('next'));
+    if (seg[0] === 'student') return await viewStudentHome();
+    if (seg[0] === 'exam') return await viewExam(seg[1]);
+    if (seg[0] === 'result') return await viewResult(seg[1]);
+    if (seg[0] === 'admin') return await viewAdmin(seg);
+    location.hash = '#/';
+  } catch (err) {
     console.error(err);
-    messagePage('خطا در برقراری ارتباط با سرور 🔌<br><small>اینترنت را چک کن و دوباره تلاش کن</small><br><br><button class="btn btn-primary" onclick="location.reload()">🔄 تلاش دوباره</button>');
+    messagePage('خطایی پیش آمد. صفحه را رفرش کن.');
   }
 }
 
-/* ── صفحهٔ ورود ── */
-function renderLogin(next){
-  if(session){location.replace(session.role==='admin'?'#/admin':'#/student');return;}
-  appEl.innerHTML=
-  '<div class="login-page">'+
-    '<div class="login-hero fade-up">'+
-      '<div class="hero-logo"><span class="tick big">√</span><h1>آزمونک</h1></div>'+
-      '<p class="tag">پلتفرم آزمون‌های خصوصی ریاضی</p>'+
-      '<ul class="feats">'+
-        '<li class="fade-up">⏱ تایمر دقیق، بالای صفحهٔ آزمون</li>'+
-        '<li class="fade-up" style="animation-delay:.1s">🖼 سؤالات تصویری، چهار گزینه‌ای</li>'+
-        '<li class="fade-up" style="animation-delay:.2s">📊 کارنامه و درصدِ آنی بعد از ثبت</li>'+
-        '<li class="fade-up" style="animation-delay:.3s">🎬 پاسخ ویدئویی و کلید بعد از آزمون</li>'+
-      '</ul>'+
-    '</div>'+
-    '<form class="card login-card fade-up" id="loginForm" style="animation-delay:.15s">'+
-      '<h2 class="disp">ورود به آزمونک</h2>'+
-      '<label class="lbl">نام کاربری</label><input class="inp" id="lu" dir="ltr" autocomplete="username" required>'+
-      '<label class="lbl">رمز عبور</label><input class="inp" id="lp" dir="ltr" type="password" autocomplete="current-password" required>'+
-      '<button class="btn btn-primary big full" id="loginBtn">ورود</button>'+
-      '<button type="button" class="btn btn-ghost btn-sm full" id="testBtn" style="margin-top:10px">🔌 تست اتصال به سرور</button>'+
-      '<p class="hint">حساب دانش‌آموزی فقط توسط مدیر ساخته می‌شود.</p>'+
-    '</form>'+
-  '</div>';
-
-  $('#testBtn').onclick=async()=>{
-    const btn=$('#testBtn');btn.disabled=true;btn.textContent='🔄 در حال تست…';
-    try{
-      if(typeof firebase==='undefined'){toast('Firebase لود نشده — صفحه را رفرش کن','err');return;}
-      if(!db){toast('db null است — رفرش کن','err');return;}
-      await db.collection('settings').doc('_ping').get();
-      toast('✅ اتصال به Firestore برقرار است');
-    }catch(err){
-      console.error('TEST ERR:',err);
-      const msg=(err&&err.message)?err.message:String(err);
-      const m=openModal('<h3 class="disp">❌ خطای اتصال</h3>'+
-        '<p class="m-msg">جزئیات خطا (این را برایم بفرست):</p>'+
-        '<pre class="creds" style="max-height:200px;overflow:auto;font-size:11px">'+esc(msg)+'</pre>'+
-        '<p class="hint">🔎 راهنما: اگر پیام <b>Missing or insufficient permissions</b> است → قوانین Firestore را باز کن. اگر <b>network</b> است → فیلترشکن را روشن کن.</p>'+
-        '<div class="m-actions"><button class="btn btn-primary" id="c">بستن</button></div>');
-      m.querySelector('#c').onclick=closeModal;
-    }finally{btn.disabled=false;btn.textContent='🔌 تست اتصال به سرور';}
-  };
-
-  $('#loginForm').onsubmit=async e=>{
+function renderLogin(next) {
+  if (session) { location.replace(session.role === 'admin' ? '#/admin' : '#/student'); return; }
+  appEl.innerHTML =
+    '<div class="login-page">' +
+    '<div class="login-hero fade-up">' +
+    '<div class="hero-logo"><span class="tick big">√</span><h1>آزمونک</h1></div>' +
+    '<p class="tag">پلتفرم آزمون‌های خصوصی ریاضی</p>' +
+    '<ul class="feats">' +
+    '<li class="fade-up" style="animation-delay:.05s">⏱ تایمر دقیق، بالای صفحهٔ آزمون</li>' +
+    '<li class="fade-up" style="animation-delay:.15s">🖼 سؤالات تصویری، چهار گزینه‌ای</li>' +
+    '<li class="fade-up" style="animation-delay:.25s">📊 کارنامه و درصدِ آنی بعد از ثبت</li>' +
+    '<li class="fade-up" style="animation-delay:.35s">🎬 پاسخ ویدئویی و کلید بعد از آزمون</li>' +
+    '</ul>' +
+    '</div>' +
+    '<form class="card login-card fade-up" id="loginForm" style="animation-delay:.15s">' +
+    '<h2 class="disp">ورود به آزمونک</h2>' +
+    '<label class="lbl">نام کاربری</label><input class="inp" id="lu" dir="ltr" autocomplete="username" required>' +
+    '<label class="lbl">رمز عبور</label><input class="inp" id="lp" dir="ltr" type="password" autocomplete="current-password" required>' +
+    '<button class="btn btn-primary big full" id="loginBtn">ورود</button>' +
+    '<p class="hint">حساب دانش‌آموزی فقط توسط مدیر ساخته می‌شود.</p>' +
+    '</form>' +
+    '</div>';
+  $('#loginForm').onsubmit = async e => {
     e.preventDefault();
-    const btn=$('#loginBtn'),u=$('#lu').value.trim().toLowerCase(),p=$('#lp').value;
-    if(!u||!p)return;
-    btn.disabled=true;btn.textContent='در حال ورود…';
-    try{
-      if(u===ADMIN_USER.toLowerCase()){
-        const ph=await sha(p);
-        const doc=await db.collection('settings').doc('admin').get();
-        let ok=false;
-        if(doc.exists){ok=doc.data().pass===ph;}
-        else if(p===ADMIN_PASS){ok=true;await db.collection('settings').doc('admin').set({user:u,pass:ph});}
-        if(ok){setSession({role:'admin',name:'مدیر'});location.hash=(next&&next.startsWith('#'))?next:'#/admin';}
-        else toast('نام کاربری یا رمز اشتباه است','err');
-      }else{
-        const snap=await db.collection('students').where('username','==',u).limit(1).get();
-        let ok=false;
-        if(!snap.empty){
-          const d=snap.docs[0];ok=d.data().pass===await sha(p);
-          if(ok){setSession({role:'student',id:d.id,name:d.data().name,username:u});location.hash=(next&&next.startsWith('#'))?next:'#/student';}
-        }
-        if(!ok)toast('نام کاربری یا رمز اشتباه است','err');
-      }
-    }catch(err){
-      console.error('LOGIN ERR:',err);
-      const msg=(err&&err.message)?err.message:String(err);
-      if(msg.includes('permission')||msg.includes('PERMISSION')){
-        toast('🔒 قوانین Firestore بسته است — برو به کنسول Firebase و Rules را باز کن','err');
-      }else if(msg.includes('network')||msg.includes('timeout')||msg.includes('Failed to fetch')){
-        toast('🔌 Firebase در ایران گاهی فیلتر است — فیلترشکن را روشن کن','err');
-      }else{
-        toast('خطا: '+msg.slice(0,80),'err');
-      }
+    const btn = $('#loginBtn'), u = $('#lu').value.trim(), p = $('#lp').value;
+    if (!u || !p) return;
+    btn.disabled = true; btn.textContent = 'در حال ورود…';
+    try {
+      const data = await api('/api/login', { method: 'POST', body: JSON.stringify({ username: u, password: p }) });
+      setSession(data.user, data.token);
+      location.hash = (next && next.startsWith('#')) ? next : (data.user.role === 'admin' ? '#/admin' : '#/student');
+    } catch (err) {
+      toast(err.message || 'خطا در ورود', 'err');
+      btn.disabled = false; btn.textContent = 'ورود';
     }
-    btn.disabled=false;btn.textContent='ورود';
   };
 }
-/* ── پوسته‌ها ── */
-function studentTop(){
-  return '<header class="topbar"><div class="inner">'+
-    '<a class="logo" href="#/student" style="text-decoration:none"><span class="tick">√</span> آزمونک</a>'+
-    '<span class="spacer"></span>'+
-    '<span class="who">👤 '+esc(session?session.name:'')+'</span>'+
-    '<button class="btn btn-outline-inv btn-sm" id="logoutBtn">خروج</button>'+
-  '</div></header>';
+
+function studentTop() {
+  return '<header class="topbar"><div class="inner">' +
+    '<a class="logo" href="#/student" style="text-decoration:none"><span class="tick">√</span> آزمونک</a>' +
+    '<span class="spacer"></span>' +
+    '<span class="who">👤 ' + esc(session ? session.name : '') + '</span>' +
+    '<button class="btn btn-outline-inv btn-sm" id="logoutBtn">خروج</button>' +
+    '</div></header>';
 }
-function adminShell(active,fn){
-  const tabs=[['exams','📝 آزمون‌ها'],['new','➕ ساخت آزمون'],['students','👥 دانش‌آموزان'],['results','📊 نتایج'],['settings','⚙️ تنظیمات']];
-  appEl.innerHTML=
-  '<header class="topbar"><div class="inner">'+
-    '<span class="logo"><span class="tick">√</span> آزمونک</span>'+
-    '<nav class="tabs">'+tabs.map(t=>'<a class="tab '+(active===t[0]?'active':'')+'" href="#/admin/'+t[0]+'">'+t[1]+'</a>').join('')+'</nav>'+
-    '<span class="spacer"></span>'+
-    '<button class="btn btn-outline-inv btn-sm" id="logoutBtn">خروج</button>'+
-  '</div></header>'+
-  '<div class="wrap" id="adminContent"><div class="loading">در حال بارگذاری…</div></div>';
+function adminShell(active, fn) {
+  const tabs = [['exams', '📝 آزمون‌ها'], ['new', '➕ ساخت آزمون'], ['students', '👥 دانش‌آموزان'], ['results', '📊 نتایج'], ['settings', '⚙️ تنظیمات']];
+  appEl.innerHTML =
+    '<header class="topbar"><div class="inner">' +
+    '<span class="logo"><span class="tick">√</span> آزمونک</span>' +
+    '<nav class="tabs">' + tabs.map(t => '<a class="tab ' + (active === t[0] ? 'active' : '') + '" href="#/admin/' + t[0] + '">' + t[1] + '</a>').join('') + '</nav>' +
+    '<span class="spacer"></span>' +
+    '<button class="btn btn-outline-inv btn-sm" id="logoutBtn">خروج</button>' +
+    '</div></header>' +
+    '<div class="wrap" id="adminContent"><div class="loading">در حال بارگذاری…</div></div>';
   return fn();
 }
 
-/* ── صفحهٔ اصلی دانش‌آموز ── */
-async function viewStudentHome(){
-  if(!session||session.role!=='student'){location.hash='#/login?next=%23%2Fstudent';return;}
-  appEl.innerHTML=studentTop()+'<div class="wrap narrow"><div class="greet fade-up"><h2 class="disp">سلام، '+esc(session.name)+' 👋</h2><p>آزمون‌های تو اینجاست؛ روی هر کدام که خواستی بزن.</p></div><div id="exlist"><div class="loading">در حال بارگذاری…</div></div></div>';
-  const [exSnap,resSnap]=await Promise.all([
-    db.collection('exams').where('published','==',true).get(),
-    db.collection('results').where('studentId','==',session.id).get()
-  ]);
-  const exams=[];exSnap.forEach(d=>exams.push({id:d.id,...d.data()}));
-  exams.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-  const res={};resSnap.forEach(d=>{res[d.data().examId]={id:d.id,...d.data()};});
-  const list=$('#exlist');
-  if(!exams.length){list.innerHTML='<div class="empty">هنوز آزمونی برایت ثبت نشده است. 📭</div>';return;}
-  list.innerHTML=exams.map((e,i)=>{
-    const r=res[e.id];let chip,action;
-    if(r&&r.status==='done'){
-      chip='<span class="chip '+(r.percent>=80?'g':r.percent>=50?'y':'r')+'">شرکت کرده — '+fa(r.percent)+'٪</span>';
-      action='<a class="btn btn-ghost btn-sm" href="#/result/'+r.id+'">📄 کارنامه و پاسخ‌ها</a>';
-    }else if(r&&r.status==='active'){
-      chip='<span class="chip y">در حال برگزاری…</span>';
-      action='<a class="btn btn-primary btn-sm" href="#/exam/'+e.id+'">▶ ادامهٔ آزمون</a>';
-    }else{
-      chip='<span class="chip b">برگزار نشده</span>';
-      action='<a class="btn btn-primary btn-sm" href="#/exam/'+e.id+'">📝 شرکت در آزمون</a>';
+async function viewStudentHome() {
+  if (!session || session.role !== 'student') { location.hash = '#/login?next=%23%2Fstudent'; return; }
+  appEl.innerHTML = studentTop() + '<div class="wrap narrow"><div class="greet fade-up"><h2 class="disp">سلام، ' + esc(session.name) + ' 👋</h2><p>آزمون‌های تو اینجاست.</p></div><div id="exlist"><div class="loading">در حال بارگذاری…</div></div></div>';
+  const [exData, resData] = await Promise.all([api('/api/exams'), api('/api/results')]);
+  const exams = exData.exams.filter(e => e.published);
+  const resMap = {};
+  resData.results.forEach(r => { resMap[r.examId] = r; });
+  const list = $('#exlist');
+  if (!exams.length) { list.innerHTML = '<div class="empty">هنوز آزمونی برایت ثبت نشده است. 📭</div>'; return; }
+  list.innerHTML = exams.map((e, i) => {
+    const r = resMap[e.id]; let chip, action;
+    if (r && r.status === 'done') {
+      chip = '<span class="chip ' + (r.percent >= 80 ? 'g' : r.percent >= 50 ? 'y' : 'r') + '">شرکت کرده — ' + fa(r.percent) + '٪</span>';
+      action = '<a class="btn btn-ghost btn-sm" href="#/result/' + r.id + '">📄 کارنامه</a>';
+    } else if (r && r.status === 'active') {
+      chip = '<span class="chip y">در حال برگزاری…</span>';
+      action = '<a class="btn btn-primary btn-sm" href="#/exam/' + e.id + '">▶ ادامه</a>';
+    } else {
+      chip = '<span class="chip b">برگزار نشده</span>';
+      action = '<a class="btn btn-primary btn-sm" href="#/exam/' + e.id + '">📝 شرکت</a>';
     }
-    return '<div class="card stu-row fade-up" style="animation-delay:'+(i*70)+'ms"><div><h3>'+esc(e.title)+'</h3><div class="ex-meta">'+fa(e.questions.length)+' سؤال · '+fa(e.duration)+' دقیقه</div></div><div class="stu-side">'+chip+action+'</div></div>';
+    return '<div class="card stu-row fade-up" style="animation-delay:' + (i * 70) + 'ms"><div><h3>' + esc(e.title) + '</h3><div class="ex-meta">' + fa(e.questions.length) + ' سؤال · ' + fa(e.duration) + ' دقیقه</div></div><div class="stu-side">' + chip + action + '</div></div>';
   }).join('');
 }
 
-/* ── جریان آزمون ── */
-async function viewExam(id){
-  if(!id){location.hash='#/student';return;}
-  if(!session){location.hash='#/login?next='+encodeURIComponent('#/exam/'+id);return;}
-  if(session.role!=='student'){messagePage('برای شرکت در آزمون باید با حساب دانش‌آموز وارد شوی.');return;}
-  const d=await db.collection('exams').doc(id).get();
-  if(!d.exists){messagePage('آزمون پیدا نشد. لینک را دوباره چک کن.');return;}
-  const exam={id:d.id,...d.data()};
-  if(!exam.published){messagePage('این آزمون هنوز فعال نشده است. بعداً سر بزن. 🙂');return;}
-  const resRef=db.collection('results').doc(id+'_'+session.id);
-  const rd=await resRef.get();
-  if(rd.exists){
-    const r=rd.data();
-    if(r.status==='done'){location.replace('#/result/'+rd.id);return;}
-    if(r.status==='active'){runExam(exam,resRef,r);return;}
+async function viewExam(id) {
+  if (!id) { location.hash = '#/student'; return; }
+  if (!session) { location.hash = '#/login?next=' + encodeURIComponent('#/exam/' + id); return; }
+  if (session.role !== 'student') { messagePage('برای شرکت در آزمون باید با حساب دانش‌آموز وارد شوی.'); return; }
+  let exam;
+  try {
+    const data = await api('/api/exam/' + id);
+    exam = data.exam;
+  } catch { messagePage('آزمون پیدا نشد.'); return; }
+  if (!exam.published) { messagePage('این آزمون هنوز فعال نشده.'); return; }
+  let existing = null;
+  try {
+    const rData = await api('/api/result/' + id + '_' + session.id);
+    existing = rData.result;
+  } catch { }
+  if (existing) {
+    if (existing.status === 'done') { location.replace('#/result/' + existing.id); return; }
+    if (existing.status === 'active') { runExam(exam, existing); return; }
   }
-  appEl.innerHTML=studentTop()+'<div class="wrap narrow"><div class="card intro fade-up">'+
-    '<span class="intro-tag">آزمون تستی · چهار گزینه‌ای</span>'+
-    '<h2 class="disp">'+esc(exam.title)+'</h2>'+
-    '<div class="intro-meta">'+
-      '<div class="im"><b>'+fa(exam.questions.length)+'</b><span>سؤال</span></div>'+
-      '<div class="im"><b>'+fa(exam.duration)+'</b><span>دقیقه</span></div>'+
-      '<div class="im"><b>۴</b><span>گزینه</span></div>'+
-    '</div>'+
-    '<ul class="rules">'+
-      '<li>به محض زدن دکمهٔ شروع، زمان به جریان می‌افتد و حتی با بستن صفحه متوقف نمی‌شود.</li>'+
-      '<li>می‌توانی پاسخ‌هایت را تا قبل از ثبت نهایی تغییر دهی.</li>'+
-      '<li>با پایان زمان، پاسخ‌های داده‌شده خودکار ثبت می‌شوند.</li>'+
-    '</ul>'+
-    '<button class="btn btn-primary big" id="startBtn">▶ شروع آزمون</button>'+
-  '</div></div>';
-  $('#startBtn').onclick=async()=>{
-    const btn=$('#startBtn');btn.disabled=true;btn.textContent='در حال آماده‌سازی…';
-    const startedAt=Date.now(),answers=Array(exam.questions.length).fill(0);
-    await resRef.set({status:'active',examId:exam.id,examTitle:exam.title,studentId:session.id,studentName:session.name,
-      startedAt,answers,correct:0,wrong:0,blank:0,total:exam.questions.length,percent:0,finishedAt:0});
-    runExam(exam,resRef,{startedAt,answers});
+  appEl.innerHTML = studentTop() + '<div class="wrap narrow"><div class="card intro fade-up">' +
+    '<span class="intro-tag">آزمون تستی · چهار گزینه‌ای</span>' +
+    '<h2 class="disp">' + esc(exam.title) + '</h2>' +
+    '<div class="intro-meta">' +
+    '<div class="im"><b>' + fa(exam.questions.length) + '</b><span>سؤال</span></div>' +
+    '<div class="im"><b>' + fa(exam.duration) + '</b><span>دقیقه</span></div>' +
+    '<div class="im"><b>۴</b><span>گزینه</span></div>' +
+    '</div>' +
+    '<ul class="rules">' +
+    '<li>به محض زدن دکمهٔ شروع، زمان به جریان می‌افتد.</li>' +
+    '<li>می‌توانی پاسخ‌هایت را تا قبل از ثبت تغییر دهی.</li>' +
+    '<li>با پایان زمان، پاسخ‌های داده‌شده خودکار ثبت می‌شوند.</li>' +
+    '</ul>' +
+    '<button class="btn btn-primary big" id="startBtn">▶ شروع آزمون</button>' +
+    '</div></div>';
+  $('#startBtn').onclick = async () => {
+    const btn = $('#startBtn'); btn.disabled = true; btn.textContent = 'در حال آماده‌سازی…';
+    try {
+      const data = await api('/api/result/' + id + '/start', { method: 'POST' });
+      runExam(exam, data.result);
+    } catch (err) {
+      toast(err.message, 'err');
+      btn.disabled = false; btn.textContent = '▶ شروع آزمون';
+    }
   };
 }
 
-function examHTML(exam,answers){
-  const qs=exam.questions.map((q,i)=>
-    '<section class="card q-card fade-up" data-q="'+i+'" style="animation-delay:'+Math.min(i*70,600)+'ms">'+
-      '<div class="q-head"><span class="q-num">سؤال '+fa(i+1)+'</span></div>'+
-      '<img class="qimg" src="'+q.img+'" alt="سؤال '+(i+1)+'" loading="lazy" onerror="this.style.display=\'none\'">'+
-      '<div class="opts">'+[1,2,3,4].map(o=>
-        '<button type="button" class="opt'+(answers[i]===o?' sel':'')+'" data-o="'+o+'"><span class="n">'+fa(o)+'</span><span>گزینهٔ '+fa(o)+'</span></button>'
-      ).join('')+'</div>'+
+function examHTML(exam, answers) {
+  const qs = exam.questions.map((q, i) =>
+    '<section class="card q-card fade-up" data-q="' + i + '" style="animation-delay:' + Math.min(i * 70, 600) + 'ms">' +
+    '<div class="q-head"><span class="q-num">سؤال ' + fa(i + 1) + '</span></div>' +
+    '<img class="qimg" src="' + q.img + '" alt="سؤال ' + (i + 1) + '" loading="lazy" onerror="this.style.display=\'none\'">' +
+    '<div class="opts">' + [1, 2, 3, 4].map(o =>
+      '<button type="button" class="opt' + (answers[i] === o ? ' sel' : '') + '" data-o="' + o + '"><span class="n">' + fa(o) + '</span><span>گزینهٔ ' + fa(o) + '</span></button>'
+    ).join('') + '</div>' +
     '</section>').join('');
-  return '<div class="exambar">'+
-    '<div class="tinfo"><b>'+esc(exam.title)+'</b><span>👤 '+esc(session.name)+'</span></div>'+
-    '<span class="spacer"></span>'+
-    '<div class="tmr"><span class="lbl2">زمان باقی‌مانده</span><span class="timerbox" id="timer">--:--</span></div>'+
-    '<div class="ans">پاسخ‌داده‌شده: <b id="answered"></b></div>'+
-    '<button class="btn btn-pen" id="submitBtn">ثبت نهایی</button>'+
-  '</div><div class="timebar"><i id="tfill" style="width:100%"></i></div>'+
-  '<div class="wrap narrow">'+
-    '<div class="exam-hint">💡 اگر صفحه را ببندی هم زمان در جریان می‌ماند و می‌توانی از همین لینک ادامه بدهی.</div>'+
-    qs+
-    '<div class="center" style="margin:26px 0"><button class="btn btn-pen big" id="submitBtn2">ثبت نهایی آزمون ✔</button></div>'+
-  '</div>';
+  return '<div class="exambar">' +
+    '<div class="tinfo"><b>' + esc(exam.title) + '</b><span>👤 ' + esc(session.name) + '</span></div>' +
+    '<span class="spacer"></span>' +
+    '<div class="tmr"><span class="lbl2">زمان باقی‌مانده</span><span class="timerbox" id="timer">--:--</span></div>' +
+    '<div class="ans">پاسخ: <b id="answered"></b></div>' +
+    '<button class="btn btn-pen" id="submitBtn">ثبت نهایی</button>' +
+    '</div><div class="timebar"><i id="tfill" style="width:100%"></i></div>' +
+    '<div class="wrap narrow">' +
+    '<div class="exam-hint">💡 اگر صفحه را ببندی هم زمان در جریان می‌ماند.</div>' +
+    qs +
+    '<div class="center" style="margin:26px 0"><button class="btn btn-pen big" id="submitBtn2">ثبت نهایی آزمون ✔</button></div>' +
+    '</div>';
 }
 
-function runExam(exam,resRef,state){
-  const answers=[...(state.answers||[])];
-  while(answers.length<exam.questions.length)answers.push(0);
-  const total=exam.questions.length;
-  const deadline=state.startedAt+exam.duration*60000;
-  let saving=null,finished=false;
-  appEl.innerHTML=examHTML(exam,answers);
-  const timerEl=$('#timer'),fillEl=$('#tfill'),ansEl=$('#answered');
-  function paint(){
-    const done=answers.filter(a=>a>0).length;
-    ansEl.textContent=fa(done)+' از '+fa(total);
-    const rem=Math.max(0,deadline-Date.now());
-    timerEl.textContent=fmtTimer(rem/1000);
-    timerEl.classList.toggle('low',rem<60000);
-    fillEl.style.width=(rem/(exam.duration*60000)*100)+'%';
-    if(rem<=0&&!finished){finished=true;toast('⏰ زمان آزمون تمام شد — پاسخ‌هایت ثبت شد');finish();}
+function runExam(exam, state) {
+  const answers = [...(state.answers || [])];
+  while (answers.length < exam.questions.length) answers.push(0);
+  const total = exam.questions.length;
+  const deadline = state.startedAt + exam.duration * 60000;
+  let saving = null, finished = false;
+  appEl.innerHTML = examHTML(exam, answers);
+  const timerEl = $('#timer'), fillEl = $('#tfill'), ansEl = $('#answered');
+  function paint() {
+    const done = answers.filter(a => a > 0).length;
+    ansEl.textContent = fa(done) + ' از ' + fa(total);
+    const rem = Math.max(0, deadline - Date.now());
+    timerEl.textContent = fmtTimer(rem / 1000);
+    timerEl.classList.toggle('low', rem < 60000);
+    fillEl.style.width = (rem / (exam.duration * 60000) * 100) + '%';
+    if (rem <= 0 && !finished) { finished = true; toast('⏰ زمان تمام شد'); finish(); }
   }
-  document.querySelectorAll('.q-card').forEach(card=>{
-    const qi=+card.dataset.q;
-    card.querySelectorAll('.opt').forEach(b=>{b.onclick=()=>{
-      if(finished)return;
-      answers[qi]=+b.dataset.o;
-      card.querySelectorAll('.opt').forEach(x=>x.classList.toggle('sel',x===b));
-      paint();
-      clearTimeout(saving);saving=setTimeout(()=>resRef.update({answers}).catch(()=>{}),600);
-    };});
+  document.querySelectorAll('.q-card').forEach(card => {
+    const qi = +card.dataset.q;
+    card.querySelectorAll('.opt').forEach(b => {
+      b.onclick = () => {
+        if (finished) return;
+        answers[qi] = +b.dataset.o;
+        card.querySelectorAll('.opt').forEach(x => x.classList.toggle('sel', x === b));
+        paint();
+        clearTimeout(saving); saving = setTimeout(() => api('/api/result/' + state.id, { method: 'PUT', body: JSON.stringify({ answers }) }).catch(() => { }), 600);
+      };
+    });
   });
-  const doSubmit=()=>{
-    if(finished)return;
-    const done=answers.filter(a=>a>0).length;
-    const ov=openModal('<h3 class="disp">ثبت نهایی آزمون</h3><p class="m-msg">به <b>'+fa(done)+'</b> سؤال از <b>'+fa(total)+'</b> پاسخ داده‌ای.<br>بعد از ثبت، دیگر نمی‌توانی چیزی را تغییر دهی. مطمئنی؟</p>'+
-      '<div class="m-actions"><button class="btn btn-primary" id="fy">✔ ثبت می‌کنم</button><button class="btn btn-ghost" id="fn">ادامهٔ آزمون</button></div>');
-    ov.querySelector('#fy').onclick=()=>{closeModal();finished=true;finish();};
-    ov.querySelector('#fn').onclick=closeModal;
+  const doSubmit = () => {
+    if (finished) return;
+    const done = answers.filter(a => a > 0).length;
+    const ov = openModal('<h3 class="disp">ثبت نهایی آزمون</h3><p class="m-msg">به <b>' + fa(done) + '</b> سؤال از <b>' + fa(total) + '</b> پاسخ داده‌ای.<br>مطمئنی؟</p>' +
+      '<div class="m-actions"><button class="btn btn-primary" id="fy">✔ ثبت</button><button class="btn btn-ghost" id="fn">ادامه</button></div>');
+    ov.querySelector('#fy').onclick = () => { closeModal(); finished = true; finish(); };
+    ov.querySelector('#fn').onclick = closeModal;
   };
-  $('#submitBtn').onclick=doSubmit;$('#submitBtn2').onclick=doSubmit;
-  async function finish(){
-    clearInterval(timerTick);window.onbeforeunload=null;
-    let correct=0;exam.questions.forEach((q,i)=>{if(answers[i]===q.correct)correct++;});
-    const blank=answers.filter(a=>a===0).length,wrong=total-correct-blank;
-    const percent=total?Math.round(correct/total*100):0;
-    try{await resRef.update({status:'done',answers,correct,wrong,blank,total,percent,finishedAt:Date.now()});}catch(e){console.error(e);}
-    location.hash='#/result/'+resRef.id;
+  $('#submitBtn').onclick = doSubmit; $('#submitBtn2').onclick = doSubmit;
+  async function finish() {
+    clearInterval(timerTick); window.onbeforeunload = null;
+    let correct = 0; exam.questions.forEach((q, i) => { if (answers[i] === q.correct) correct++; });
+    const blank = answers.filter(a => a === 0).length, wrong = total - correct - blank;
+    const percent = total ? Math.round(correct / total * 100) : 0;
+    try { await api('/api/result/' + state.id, { method: 'PUT', body: JSON.stringify({ status: 'done', answers, correct, wrong, blank, total, percent, finishedAt: Date.now() }) }); } catch (e) { console.error(e); }
+    location.hash = '#/result/' + state.id;
   }
-  window.onbeforeunload=e=>{e.preventDefault();return '';};
+  window.onbeforeunload = e => { e.preventDefault(); return ''; };
   paint();
-  timerTick=setInterval(paint,250);
+  timerTick = setInterval(paint, 250);
 }
 
-/* ── کارنامهٔ دانش‌آموز ── */
-async function viewResult(resId){
-  if(!session||session.role!=='student'){location.hash='#/login';return;}
-  const rd=await db.collection('results').doc(resId).get();
-  if(!rd.exists){messagePage('کارنامه‌ای پیدا نشد.');return;}
-  const r=rd.data();
-  if(r.studentId!==session.id){messagePage('این کارنامه متعلق به تو نیست.');return;}
-  if(r.status!=='done'){location.replace('#/exam/'+r.examId);return;}
-  let exam=null;
-  const ed=await db.collection('exams').doc(r.examId).get();
-  if(ed.exists)exam={id:ed.id,...ed.data()};
-  const color=r.percent>=80?'var(--ok)':r.percent>=50?'var(--amber)':'var(--pen)';
-  const msg=r.percent>=85?'عالی بود! آفرین 🎉':r.percent>=60?'خوب بود؛ با کمی تمرین، بهتر هم می‌شود 👍':r.percent>=35?'بد نبود، ولی جای کار دارد 💪':'نگران نباش؛ پاسخ‌نامه و ویدیو را ببین و دوباره تمرین کن 📚';
-  const C=(2*Math.PI*62).toFixed(1);
-  let html=studentTop()+'<div class="wrap narrow">'+
-  '<div class="card pad result-head fade-up">'+
-    '<div class="gauge"><svg width="170" height="170" viewBox="0 0 170 170">'+
-      '<circle cx="85" cy="85" r="62" fill="none" stroke="#ece7d8" stroke-width="13"/>'+
-      '<circle id="gval" cx="85" cy="85" r="62" fill="none" stroke="'+color+'" stroke-width="13" stroke-linecap="round" stroke-dasharray="'+C+'" stroke-dashoffset="'+C+'" style="transition:stroke-dashoffset 1.3s cubic-bezier(.25,.8,.3,1)"/>'+
-    '</svg><div class="val">'+fa(r.percent)+'٪</div></div>'+
-    '<div class="r-text"><span class="intro-tag">کارنامهٔ آزمون</span>'+
-      '<h2 class="disp">'+esc(r.examTitle)+'</h2><p class="r-msg">'+msg+'</p>'+
-      '<div class="r-stats"><span class="chip g">✔ صحیح '+fa(r.correct)+'</span><span class="chip r">✘ غلط '+fa(r.wrong)+'</span><span class="chip b">⚪ بی‌پاسخ '+fa(r.blank)+'</span><span class="chip y">⏱ '+fmtDur(r.finishedAt-r.startedAt)+'</span></div>'+
-    '</div>'+
-  '</div>';
-  if(exam&&exam.videoUrl)html+='<div class="card pad fade-up"><h2 class="disp sec-title">🎬 پاسخ ویدئویی</h2>'+videoEmbed(exam.videoUrl)+'</div>';
-  if(exam){
-    html+='<h2 class="disp sec-title">🗝 کلید و پاسخ‌نامه</h2>'+exam.questions.map((q,i)=>{
-      const a=(r.answers||[])[i]||0;
-      const st=a===0?['b','⚪ بی‌پاسخ']:a===q.correct?['g','✔ صحیح']:['r','✘ غلط'];
-      return '<div class="card pad q-card fade-up">'+
-        '<div class="q-head"><span class="q-num">سؤال '+fa(i+1)+'</span><span class="chip '+st[0]+'">'+st[1]+'</span></div>'+
-        '<img class="qimg" src="'+q.img+'" loading="lazy" onerror="this.style.display=\'none\'">'+
-        '<div class="opts">'+[1,2,3,4].map(o=>{
-          let cls='',tag='';
-          if(o===q.correct){cls='good';tag='<span class="tag t-ok">'+(a===o?'انتخاب تو ✓':'پاسخ صحیح')+'</span>';}
-          else if(o===a){cls='bad';tag='<span class="tag t-bad">انتخاب تو</span>';}
-          return '<div class="opt ro '+cls+'"><span class="n">'+fa(o)+'</span><span>گزینهٔ '+fa(o)+'</span>'+tag+'</div>';
-        }).join('')+'</div></div>';
+async function viewResult(resId) {
+  if (!session || session.role !== 'student') { location.hash = '#/login'; return; }
+  let r;
+  try {
+    const data = await api('/api/result/' + resId);
+    r = data.result;
+  } catch { messagePage('کارنامه پیدا نشد.'); return; }
+  if (r.studentId !== session.id) { messagePage('این کارنامه متعلق به تو نیست.'); return; }
+  if (r.status !== 'done') { location.replace('#/exam/' + r.examId); return; }
+  let exam = null;
+  try {
+    const d = await api('/api/exam/' + r.examId);
+    exam = d.exam;
+  } catch { }
+  const color = r.percent >= 80 ? 'var(--ok)' : r.percent >= 50 ? 'var(--amber)' : 'var(--pen)';
+  const msg = r.percent >= 85 ? 'عالی بود! آفرین 🎉' : r.percent >= 60 ? 'خوب بود 👍' : r.percent >= 35 ? 'جای کار دارد 💪' : 'نگران نباش 📚';
+  const C = (2 * Math.PI * 62).toFixed(1);
+  let html = studentTop() + '<div class="wrap narrow">' +
+    '<div class="card pad result-head fade-up">' +
+    '<div class="gauge"><svg width="170" height="170" viewBox="0 0 170 170">' +
+    '<circle cx="85" cy="85" r="62" fill="none" stroke="#ece7d8" stroke-width="13"/>' +
+    '<circle id="gval" cx="85" cy="85" r="62" fill="none" stroke="' + color + '" stroke-width="13" stroke-linecap="round" stroke-dasharray="' + C + '" stroke-dashoffset="' + C + '" style="transition:stroke-dashoffset 1.3s"/>' +
+    '</svg><div class="val">' + fa(r.percent) + '٪</div></div>' +
+    '<div class="r-text"><span class="intro-tag">کارنامهٔ آزمون</span>' +
+    '<h2 class="disp">' + esc(r.examTitle) + '</h2><p class="r-msg">' + msg + '</p>' +
+    '<div class="r-stats"><span class="chip g">✔ صحیح ' + fa(r.correct) + '</span><span class="chip r">✘ غلط ' + fa(r.wrong) + '</span><span class="chip b">⚪ بی‌پاسخ ' + fa(r.blank) + '</span><span class="chip y">⏱ ' + fmtDur(r.finishedAt - r.startedAt) + '</span></div>' +
+    '</div>' +
+    '</div>';
+  if (exam && exam.videoUrl) html += '<div class="card pad fade-up"><h2 class="disp sec-title">🎬 پاسخ ویدئویی</h2>' + videoEmbed(exam.videoUrl) + '</div>';
+  if (exam) {
+    html += '<h2 class="disp sec-title">🗝 کلید و پاسخ‌نامه</h2>' + exam.questions.map((q, i) => {
+      const a = (r.answers || [])[i] || 0;
+      const st = a === 0 ? ['b', '⚪ بی‌پاسخ'] : a === q.correct ? ['g', '✔ صحیح'] : ['r', '✘ غلط'];
+      return '<div class="card pad q-card fade-up">' +
+        '<div class="q-head"><span class="q-num">سؤال ' + fa(i + 1) + '</span><span class="chip ' + st[0] + '">' + st[1] + '</span></div>' +
+        '<img class="qimg" src="' + q.img + '" loading="lazy" onerror="this.style.display=\'none\'">' +
+        '<div class="opts">' + [1, 2, 3, 4].map(o => {
+          let cls = '', tag = '';
+          if (o === q.correct) { cls = 'good'; tag = '<span class="tag t-ok">' + (a === o ? 'انتخاب تو ✓' : 'پاسخ صحیح') + '</span>'; }
+          else if (o === a) { cls = 'bad'; tag = '<span class="tag t-bad">انتخاب تو</span>'; }
+          return '<div class="opt ro ' + cls + '"><span class="n">' + fa(o) + '</span><span>گزینهٔ ' + fa(o) + '</span>' + tag + '</div>';
+        }).join('') + '</div></div>';
     }).join('');
-  }else html+='<div class="card pad" style="margin-top:16px">آزمون مربوطه حذف شده؛ پاسخ‌نامه در دسترس نیست.</div>';
-  html+='<div class="center" style="margin:26px 0"><a class="btn btn-primary" href="#/student">بازگشت به آزمون‌های من</a></div></div>';
-  appEl.innerHTML=html;
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{const g=$('#gval');if(g)g.style.strokeDashoffset=(C*(1-r.percent/100)).toFixed(1);}));
+  } else html += '<div class="card pad" style="margin-top:16px">آزمون حذف شده.</div>';
+  html += '<div class="center" style="margin:26px 0"><a class="btn btn-primary" href="#/student">بازگشت</a></div></div>';
+  appEl.innerHTML = html;
+  requestAnimationFrame(() => requestAnimationFrame(() => { const g = $('#gval'); if (g) g.style.strokeDashoffset = (C * (1 - r.percent / 100)).toFixed(1); }));
 }
 
-/* ── پنل ادمین ── */
-async function viewAdmin(seg){
-  if(!session||session.role!=='admin'){location.hash='#/login?next=%23%2Fadmin';return;}
-  const tab=seg[1]||'exams';
-  if(tab==='exams')return adminShell('exams',adminExamsList);
-  if(tab==='new')return adminShell('new',()=>adminEditor(null));
-  if(tab==='edit'&&seg[2])return adminShell('new',()=>adminEditor(seg[2]));
-  if(tab==='students')return adminShell('students',adminStudents);
-  if(tab==='results')return adminShell('results',adminResults);
-  if(tab==='settings')return adminShell('settings',adminSettings);
-  location.hash='#/admin';
+async function viewAdmin(seg) {
+  if (!session || session.role !== 'admin') { location.hash = '#/login?next=%23%2Fadmin'; return; }
+  const tab = seg[1] || 'exams';
+  if (tab === 'exams') return adminShell('exams', adminExamsList);
+  if (tab === 'new') return adminShell('new', () => adminEditor(null));
+  if (tab === 'edit' && seg[2]) return adminShell('new', () => adminEditor(seg[2]));
+  if (tab === 'students') return adminShell('students', adminStudents);
+  if (tab === 'results') return adminShell('results', adminResults);
+  if (tab === 'settings') return adminShell('settings', adminSettings);
+  location.hash = '#/admin';
 }
-const statCard=(l,v)=>'<div class="stat fade-up"><b>'+v+'</b><span>'+l+'</span></div>';
+const statCard = (l, v) => '<div class="stat fade-up"><b>' + v + '</b><span>' + l + '</span></div>';
 
-async function adminExamsList(){
-  const box=$('#adminContent');
-  const [examsSnap,resSnap]=await Promise.all([
-    db.collection('exams').orderBy('createdAt','desc').get(),
-    db.collection('results').where('status','==','done').get()
-  ]);
-  const stats={};resSnap.forEach(d=>{const r=d.data();const s=stats[r.examId]||(stats[r.examId]={n:0,sum:0});s.n++;s.sum+=r.percent;});
-  let totalP=0,totalN=0;resSnap.forEach(d=>{totalN++;totalP+=d.data().percent;});
-  const exams=[];examsSnap.forEach(d=>exams.push({id:d.id,...d.data()}));
-  box.innerHTML=
-  '<div class="stats-row" style="margin-top:8px">'+
-    statCard('آزمون‌ها',fa(exams.length))+
-    statCard('شرکت‌کننده‌ها',fa(totalN))+
-    statCard('میانگین کل',totalN?fa(Math.round(totalP/totalN))+'٪':'—')+
-  '</div>'+
-  '<div class="toolbar"><h2 class="disp">آزمون‌ها</h2><a href="#/admin/new" class="btn btn-primary">➕ ساخت آزمون جدید</a></div>'+
-  (exams.length?'':'<div class="empty">هنوز آزمونی نساخته‌ای؛ از دکمهٔ بالا شروع کن ✍️</div>')+
-  exams.map(e=>{
-    const s=stats[e.id]||{n:0,sum:0};
-    return '<div class="card exam-row fade-up">'+
-      '<div class="ex-info"><h3>'+esc(e.title)+'</h3>'+
-        '<div class="ex-meta">'+fa(e.questions.length)+' سؤال · '+fa(e.duration)+' دقیقه · '+fmtDate(e.createdAt)+(e.videoUrl?' · 🎬 ویدیو':'')+'</div>'+
-        '<div class="ex-link"><code dir="ltr">'+examLink(e.id)+'</code></div></div>'+
-      '<div class="ex-side">'+
-        '<div class="ex-stats">'+(s.n?fa(s.n)+' شرکت‌کننده · میانگین '+fa(Math.round(s.sum/s.n))+'٪':'هنوز کسی شرکت نکرده')+'</div>'+
-        '<label class="switch"><input type="checkbox" data-pub="'+e.id+'" '+(e.published?'checked':'')+'><span></span><em>'+(e.published?'فعال':'غیرفعال')+'</em></label>'+
-        '<div class="row-actions">'+
-          '<button class="btn btn-ghost btn-sm" data-copy="'+examLink(e.id)+'">📋 کپی لینک</button>'+
-          '<a class="btn btn-ghost btn-sm" href="#/admin/edit/'+e.id+'">✏️ ویرایش</a>'+
-          '<button class="btn btn-danger-o btn-sm" data-del="'+e.id+'">🗑 حذف</button>'+
+async function adminExamsList() {
+  const box = $('#adminContent');
+  const [exData, resData] = await Promise.all([api('/api/exams'), api('/api/results')]);
+  const stats = {}; resData.results.filter(r => r.status === 'done').forEach(r => { const s = stats[r.examId] || (stats[r.examId] = { n: 0, sum: 0 }); s.n++; s.sum += r.percent; });
+  const finished = resData.results.filter(r => r.status === 'done');
+  let totalP = 0; finished.forEach(r => totalP += r.percent);
+  const exams = exData.exams;
+  box.innerHTML =
+    '<div class="stats-row" style="margin-top:8px">' +
+    statCard('آزمون‌ها', fa(exams.length)) +
+    statCard('شرکت‌کننده‌ها', fa(finished.length)) +
+    statCard('میانگین کل', finished.length ? fa(Math.round(totalP / finished.length)) + '٪' : '—') +
+    '</div>' +
+    '<div class="toolbar"><h2 class="disp">آزمون‌ها</h2><a href="#/admin/new" class="btn btn-primary">➕ ساخت آزمون جدید</a></div>' +
+    (exams.length ? '' : '<div class="empty">هنوز آزمونی نساخته‌ای.</div>') +
+    exams.map(e => {
+      const s = stats[e.id] || { n: 0, sum: 0 };
+      return '<div class="card exam-row fade-up">' +
+        '<div class="ex-info"><h3>' + esc(e.title) + '</h3>' +
+        '<div class="ex-meta">' + fa(e.questions.length) + ' سؤال · ' + fa(e.duration) + ' دقیقه · ' + fmtDate(e.createdAt) + (e.videoUrl ? ' · 🎬 ویدیو' : '') + '</div>' +
+        '<div class="ex-link"><code dir="ltr">' + examLink(e.id) + '</code></div></div>' +
+        '<div class="ex-side">' +
+        '<div class="ex-stats">' + (s.n ? fa(s.n) + ' شرکت‌کننده · میانگین ' + fa(Math.round(s.sum / s.n)) + '٪' : 'هنوز کسی شرکت نکرده') + '</div>' +
+        '<label class="switch"><input type="checkbox" data-pub="' + e.id + '" ' + (e.published ? 'checked' : '') + '><span></span><em>' + (e.published ? 'فعال' : 'غیرفعال') + '</em></label>' +
+        '<div class="row-actions">' +
+        '<button class="btn btn-ghost btn-sm" data-copy="' + examLink(e.id) + '">📋 کپی لینک</button>' +
+        '<a class="btn btn-ghost btn-sm" href="#/admin/edit/' + e.id + '">✏️ ویرایش</a>' +
+        '<button class="btn btn-danger-o btn-sm" data-del="' + e.id + '">🗑 حذف</button>' +
         '</div></div></div>';
-  }).join('');
-  box.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>copyText(b.dataset.copy));
-  box.querySelectorAll('[data-pub]').forEach(c=>c.onchange=async()=>{
-    await db.collection('exams').doc(c.dataset.pub).update({published:c.checked});
-    toast(c.checked?'آزمون فعال شد ✓':'آزمون غیرفعال شد');route();
+    }).join('');
+  box.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => copyText(b.dataset.copy));
+  box.querySelectorAll('[data-pub]').forEach(c => c.onchange = async () => {
+    await api('/api/exam/' + c.dataset.pub + '/publish', { method: 'POST', body: JSON.stringify({ published: c.checked }) });
+    toast(c.checked ? 'آزمون فعال شد ✓' : 'آزمون غیرفعال شد'); route();
   });
-  box.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>confirmBox('این آزمون همراه با نتایجش حذف می‌شود.',async()=>{
-    const id=b.dataset.del;
-    const rs=await db.collection('results').where('examId','==',id).get();
-    const batch=db.batch();rs.forEach(d=>batch.delete(d.ref));batch.delete(db.collection('exams').doc(id));
-    await batch.commit();toast('حذف شد');route();
+  box.querySelectorAll('[data-del]').forEach(b => b.onclick = () => confirmBox('این آزمون حذف می‌شود.', async () => {
+    await api('/api/exam/' + b.dataset.del, { method: 'DELETE' }); toast('حذف شد'); route();
   }));
 }
 
-/* ── ساخت/ویرایش آزمون ── */
-let draft=null,editingId=null;
-async function adminEditor(id){
-  editingId=id||null;
-  if(id){
-    const d=await db.collection('exams').doc(id).get();
-    if(!d.exists){toast('آزمون پیدا نشد','err');location.hash='#/admin';return;}
-    const e=d.data();
-    draft={title:e.title,duration:e.duration,videoUrl:e.videoUrl||'',published:!!e.published,questions:e.questions.map(q=>({img:q.img,correct:q.correct}))};
-  }else draft={title:'',duration:30,videoUrl:'',published:true,questions:[]};
+let draft = null, editingId = null;
+async function adminEditor(id) {
+  editingId = id || null;
+  if (id) {
+    try {
+      const d = await api('/api/exam/' + id);
+      const e = d.exam;
+      draft = { title: e.title, duration: e.duration, videoUrl: e.videoUrl || '', published: !!e.published, questions: e.questions.map(q => ({ img: q.img, correct: q.correct })) };
+    } catch { toast('آزمون پیدا نشد', 'err'); location.hash = '#/admin'; return; }
+  } else draft = { title: '', duration: 30, videoUrl: '', published: true, questions: [] };
   drawEditor();
 }
-function drawEditor(){
-  $('#adminContent').innerHTML=
-  '<div class="card pad fade-up"><h2 class="disp" style="font-size:28px">'+(editingId?'ویرایش آزمون':'ساخت آزمون جدید')+'</h2>'+
-    '<div class="form-grid3">'+
-      '<div class="span2"><label class="lbl">عنوان آزمون</label><input id="e-title" class="inp" value="'+esc(draft.title)+'" placeholder="مثلاً: آزمون ریاضی نهم — جلسهٔ سوم"></div>'+
-      '<div><label class="lbl">مدت (دقیقه)</label><input id="e-duration" type="number" min="1" class="inp" value="'+draft.duration+'"></div>'+
-      '<div class="span2"><label class="lbl">لینک پاسخ ویدئویی (اختیاری)</label><input id="e-video" dir="ltr" class="inp" value="'+esc(draft.videoUrl)+'" placeholder="https://www.aparat.com/v/xxxxx">'+
-      '<p class="hint">لینک آپارات یا یوتیوب؛ بعد از آزمون نمایش داده می‌شود.</p></div>'+
-      '<div><label class="lbl">وضعیت</label><label class="switch"><input type="checkbox" id="e-pub" '+(draft.published?'checked':'')+'><span></span><em>فعال</em></label></div>'+
-    '</div></div>'+
-  '<div class="toolbar"><h2 class="disp">سؤال‌ها</h2><button class="btn btn-primary" id="addQ">➕ افزودن سؤال</button></div>'+
-  '<div id="qlist"></div>'+
-  '<div class="card pad save-bar fade-up">'+
-    '<button class="btn btn-primary big" id="saveExam">'+(editingId?'💾 ذخیرهٔ تغییرات':'💾 ساخت آزمون')+'</button>'+
-    '<div id="linkBox"></div>'+
-  '</div>';
-  $('#addQ').onclick=()=>{draft.questions.push({img:'',correct:1});drawQList();window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});};
-  $('#saveExam').onclick=saveExam;
-  if(editingId)showLink();
+function drawEditor() {
+  $('#adminContent').innerHTML =
+    '<div class="card pad fade-up"><h2 class="disp" style="font-size:28px">' + (editingId ? 'ویرایش آزمون' : 'ساخت آزمون جدید') + '</h2>' +
+    '<div class="form-grid3">' +
+    '<div class="span2"><label class="lbl">عنوان آزمون</label><input id="e-title" class="inp" value="' + esc(draft.title) + '" placeholder="مثلاً: آزمون ریاضی نهم"></div>' +
+    '<div><label class="lbl">مدت (دقیقه)</label><input id="e-duration" type="number" min="1" class="inp" value="' + draft.duration + '"></div>' +
+    '<div class="span2"><label class="lbl">لینک پاسخ ویدئویی (اختیاری)</label><input id="e-video" dir="ltr" class="inp" value="' + esc(draft.videoUrl) + '" placeholder="https://www.aparat.com/v/xxxxx">' +
+    '<p class="hint">لینک آپارات یا یوتیوب.</p></div>' +
+    '<div><label class="lbl">وضعیت</label><label class="switch"><input type="checkbox" id="e-pub" ' + (draft.published ? 'checked' : '') + '><span></span><em>فعال</em></label></div>' +
+    '</div></div>' +
+    '<div class="toolbar"><h2 class="disp">سؤال‌ها</h2><button class="btn btn-primary" id="addQ">➕ افزودن سؤال</button></div>' +
+    '<div id="qlist"></div>' +
+    '<div class="card pad save-bar fade-up">' +
+    '<button class="btn btn-primary big" id="saveExam">' + (editingId ? '💾 ذخیرهٔ تغییرات' : '💾 ساخت آزمون') + '</button>' +
+    '<div id="linkBox"></div>' +
+    '</div>';
+  $('#addQ').onclick = () => { draft.questions.push({ img: '', correct: 1 }); drawQList(); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); };
+  $('#saveExam').onclick = saveExam;
+  if (editingId) showLink();
   drawQList();
 }
-function qItemHTML(q,i){
-  const prev=q.img?'<img class="qprev-img" src="'+esc(q.img)+'" onerror="this.style.display=\'none\'">':'<span class="qprev-empty">تصویر سؤال اینجا نمایش داده می‌شود 📷</span>';
-  return '<div class="card q-item fade-up" data-i="'+i+'">'+
-    '<div class="qi-head"><span class="q-badge">سؤال '+fa(i+1)+'</span><div class="qi-tools">'+
-      '<button class="icon-btn" '+(i===0?'disabled':'')+' data-act="up">↑</button> '+
-      '<button class="icon-btn" '+(i===draft.questions.length-1?'disabled':'')+' data-act="down">↓</button> '+
-      '<button class="icon-btn danger" data-act="del">✕</button>'+
-    '</div></div>'+
-    '<div class="qi-body">'+
-      '<div class="qi-img"><div class="qprev">'+prev+'</div>'+
-        '<input type="file" class="qfile" accept="image/*" hidden>'+
-        '<button class="btn btn-ghost btn-sm" data-act="pick">📤 آپلود تصویر سؤال</button>'+
-        '<input class="inp qurl" dir="ltr" placeholder="…یا لینک تصویر را بچسبان" value="'+esc(q.img)+'"></div>'+
-      '<div class="qi-corr"><p class="lbl" style="margin-top:0">پاسخ صحیح:</p><div class="corr-opts">'+
-        [1,2,3,4].map(o=>'<label class="corr '+(q.correct===o?'on':'')+'"><input type="radio" name="corr'+i+'" value="'+o+'" '+(q.correct===o?'checked':'')+'><span>'+fa(o)+'</span></label>').join('')+
-      '</div><p class="hint">مقادیر گزینه‌ها داخل عکس است.</p></div>'+
+function qItemHTML(q, i) {
+  const prev = q.img ? '<img class="qprev-img" src="' + esc(q.img) + '" onerror="this.style.display=\'none\'">' : '<span class="qprev-empty">تصویر سؤال اینجا نمایش داده می‌شود 📷</span>';
+  return '<div class="card q-item fade-up" data-i="' + i + '">' +
+    '<div class="qi-head"><span class="q-badge">سؤال ' + fa(i + 1) + '</span><div class="qi-tools">' +
+    '<button class="icon-btn" ' + (i === 0 ? 'disabled' : '') + ' data-act="up">↑</button> ' +
+    '<button class="icon-btn" ' + (i === draft.questions.length - 1 ? 'disabled' : '') + ' data-act="down">↓</button> ' +
+    '<button class="icon-btn danger" data-act="del">✕</button>' +
+    '</div></div>' +
+    '<div class="qi-body">' +
+    '<div class="qi-img"><div class="qprev">' + prev + '</div>' +
+    '<input type="file" class="qfile" accept="image/*" hidden>' +
+    '<button class="btn btn-ghost btn-sm" data-act="pick">📤 آپلود تصویر</button>' +
+    '<input class="inp qurl" dir="ltr" placeholder="…یا لینک تصویر" value="' + esc(q.img) + '"></div>' +
+    '<div class="qi-corr"><p class="lbl" style="margin-top:0">پاسخ صحیح:</p><div class="corr-opts">' +
+    [1, 2, 3, 4].map(o => '<label class="corr ' + (q.correct === o ? 'on' : '') + '"><input type="radio" name="corr' + i + '" value="' + o + '" ' + (q.correct === o ? 'checked' : '') + '><span>' + fa(o) + '</span></label>').join('') +
+    '</div><p class="hint">مقادیر گزینه‌ها داخل عکس است.</p></div>' +
     '</div></div>';
 }
-function drawQList(){
-  const box=$('#qlist');
-  if(!draft.questions.length){box.innerHTML='<div class="empty" style="margin-bottom:14px">هنوز سؤالی اضافه نکرده‌ای.</div>';return;}
-  box.innerHTML=draft.questions.map((q,i)=>qItemHTML(q,i)).join('');
-  box.querySelectorAll('.q-item').forEach(el=>{
-    const i=+el.dataset.i,q=draft.questions[i];
-    el.querySelector('[data-act="pick"]').onclick=()=>el.querySelector('.qfile').click();
-    el.querySelector('.qfile').onchange=async ev=>{
-      const f=ev.target.files[0];if(!f)return;
-      el.querySelector('.qprev').innerHTML='<span class="qprev-empty">⏳ در حال پردازش…</span>';
-      try{
-        const data=await fileToDataURL(f);
-        q.img=await uploadImage(data);
-        toast('تصویر سؤال '+fa(i+1)+' آماده شد ✓');
-      }catch(err){console.error(err);toast('خطا در پردازش تصویر','err');}
+function drawQList() {
+  const box = $('#qlist');
+  if (!draft.questions.length) { box.innerHTML = '<div class="empty" style="margin-bottom:14px">هنوز سؤالی اضافه نکرده‌ای.</div>'; return; }
+  box.innerHTML = draft.questions.map((q, i) => qItemHTML(q, i)).join('');
+  box.querySelectorAll('.q-item').forEach(el => {
+    const i = +el.dataset.i, q = draft.questions[i];
+    el.querySelector('[data-act="pick"]').onclick = () => el.querySelector('.qfile').click();
+    el.querySelector('.qfile').onchange = async ev => {
+      const f = ev.target.files[0]; if (!f) return;
+      el.querySelector('.qprev').innerHTML = '<span class="qprev-empty">⏳ در حال پردازش…</span>';
+      try {
+        q.img = await fileToDataURL(f);
+        toast('تصویر سؤال ' + fa(i + 1) + ' آماده شد ✓');
+      } catch { toast('خطا در پردازش', 'err'); }
       drawQList();
     };
-    const urlIn=el.querySelector('.qurl');
-    urlIn.oninput=()=>{q.img=urlIn.value.trim();
-      el.querySelector('.qprev').innerHTML=q.img?'<img class="qprev-img" src="'+esc(q.img)+'" onerror="this.style.display=\'none\'">':'<span class="qprev-empty">تصویر سؤال اینجا نمایش داده می‌شود 📷</span>';};
-    el.querySelectorAll('input[name="corr'+i+'"]').forEach(r=>r.onchange=()=>{
-      q.correct=+r.value;
-      el.querySelectorAll('.corr').forEach(c=>c.classList.toggle('on',c.querySelector('input').checked));
+    const urlIn = el.querySelector('.qurl');
+    urlIn.oninput = () => { q.img = urlIn.value.trim();
+      el.querySelector('.qprev').innerHTML = q.img ? '<img class="qprev-img" src="' + esc(q.img) + '" onerror="this.style.display=\'none\'">' : '<span class="qprev-empty">تصویر سؤال اینجا 📷</span>'; };
+    el.querySelectorAll('input[name="corr' + i + '"]').forEach(r => r.onchange = () => {
+      q.correct = +r.value;
+      el.querySelectorAll('.corr').forEach(c => c.classList.toggle('on', c.querySelector('input').checked));
     });
-    el.querySelectorAll('[data-act]').forEach(b=>{
-      const act=b.dataset.act;
-      const swap=j=>{const t=draft.questions[i];draft.questions[i]=draft.questions[j];draft.questions[j]=t;drawQList();};
-      if(act==='up')b.onclick=()=>{if(i>0)swap(i-1);};
-      if(act==='down')b.onclick=()=>{if(i<draft.questions.length-1)swap(i+1);};
-      if(act==='del')b.onclick=()=>{draft.questions.splice(i,1);drawQList();};
+    el.querySelectorAll('[data-act]').forEach(b => {
+      const act = b.dataset.act;
+      const swap = j => { const t = draft.questions[i]; draft.questions[i] = draft.questions[j]; draft.questions[j] = t; drawQList(); };
+      if (act === 'up') b.onclick = () => { if (i > 0) swap(i - 1); };
+      if (act === 'down') b.onclick = () => { if (i < draft.questions.length - 1) swap(i + 1); };
+      if (act === 'del') b.onclick = () => { draft.questions.splice(i, 1); drawQList(); };
     });
   });
 }
-async function saveExam(){
-  draft.title=$('#e-title').value.trim();
-  draft.duration=+$('#e-duration').value||0;
-  draft.videoUrl=$('#e-video').value.trim();
-  draft.published=$('#e-pub').checked;
-  if(!draft.title)return toast('عنوان آزمون را بنویس','err');
-  if(!draft.duration)return toast('مدت آزمون را مشخص کن','err');
-  if(!draft.questions.length)return toast('حداقل یک سؤال اضافه کن','err');
-  for(let i=0;i<draft.questions.length;i++){
-    if(!draft.questions[i].img)return toast('تصویر سؤال '+fa(i+1)+' خالی است','err');
-    if(!draft.questions[i].correct)return toast('پاسخ صحیح سؤال '+fa(i+1)+' مشخص نشده','err');
+async function saveExam() {
+  draft.title = $('#e-title').value.trim();
+  draft.duration = +$('#e-duration').value || 0;
+  draft.videoUrl = $('#e-video').value.trim();
+  draft.published = $('#e-pub').checked;
+  if (!draft.title) return toast('عنوان آزمون را بنویس', 'err');
+  if (!draft.duration) return toast('مدت را مشخص کن', 'err');
+  if (!draft.questions.length) return toast('حداقل یک سؤال', 'err');
+  for (let i = 0; i < draft.questions.length; i++) {
+    if (!draft.questions[i].img) return toast('تصویر سؤال ' + fa(i + 1) + ' خالی است', 'err');
+    if (!draft.questions[i].correct) return toast('پاسخ صحیح سؤال ' + fa(i + 1), 'err');
   }
-  const btn=$('#saveExam');btn.disabled=true;btn.textContent='در حال ذخیره…';
-  try{
-    const id=editingId||uid(8);
-    const data={title:draft.title,duration:draft.duration,videoUrl:draft.videoUrl,published:draft.published,
-      questions:draft.questions.map(q=>({img:q.img,correct:q.correct}))};
-    if(!editingId)data.createdAt=Date.now();
-    await db.collection('exams').doc(id).set(data,{merge:true});
-    editingId=id;btn.textContent='💾 ذخیرهٔ تغییرات';
-    toast('آزمون ذخیره شد ✓');showLink();
-  }catch(err){console.error(err);toast('خطا در ذخیره','err');}
-  btn.disabled=false;
+  const btn = $('#saveExam'); btn.disabled = true; btn.textContent = 'در حال ذخیره…';
+  try {
+    const body = { id: editingId, ...draft };
+    const data = await api('/api/exam', { method: 'POST', body: JSON.stringify(body) });
+    editingId = data.id; btn.textContent = '💾 ذخیرهٔ تغییرات';
+    toast('آزمون ذخیره شد ✓'); showLink();
+  } catch (err) { toast('خطا: ' + err.message, 'err'); }
+  btn.disabled = false;
 }
-function showLink(){
-  const lb=$('#linkBox');
-  lb.innerHTML='<span>🔗 لینک آزمون:</span><code dir="ltr">'+examLink(editingId)+'</code><button class="btn btn-ghost btn-sm" id="copyLink">📋 کپی</button>';
-  $('#copyLink').onclick=()=>copyText(examLink(editingId));
+function showLink() {
+  const lb = $('#linkBox');
+  lb.innerHTML = '<span>🔗 لینک آزمون:</span><code dir="ltr">' + examLink(editingId) + '</code><button class="btn btn-ghost btn-sm" id="copyLink">📋 کپی</button>';
+  $('#copyLink').onclick = () => copyText(examLink(editingId));
 }
 
-/* ── دانش‌آموزان ── */
-async function adminStudents(){
-  const box=$('#adminContent');
-  const snap=await db.collection('students').orderBy('createdAt','desc').get();
-  const students=[];snap.forEach(d=>students.push({id:d.id,...d.data()}));
-  box.innerHTML=
-  '<div class="toolbar"><h2 class="disp">دانش‌آموزان</h2></div>'+
-  '<form class="card pad form-grid" id="addStu">'+
-    '<div><label class="lbl">نام و نام خانوادگی</label><input class="inp" id="s-name" required></div>'+
-    '<div><label class="lbl">نام کاربری (انگلیسی)</label><input class="inp" id="s-user" dir="ltr" required placeholder="ali.m"></div>'+
-    '<div><label class="lbl">رمز عبور</label><input class="inp" id="s-pass" dir="ltr" required placeholder="حداقل ۴ حرف"></div>'+
-    '<div><button class="btn btn-primary">➕ ساخت حساب</button></div>'+
-  '</form>'+
-  '<div class="card pad table-wrap"><table class="tbl"><tr><th>نام</th><th>نام کاربری</th><th>ساخته‌شده</th><th>عملیات</th></tr>'+
-  (students.map(s=>'<tr><td>'+esc(s.name)+'</td><td dir="ltr">'+esc(s.username)+'</td><td>'+fmtDate(s.createdAt)+'</td>'+
-    '<td><div class="row-actions">'+
-      '<button class="btn btn-ghost btn-sm" data-pass="'+s.id+'" data-name="'+esc(s.name)+'" data-user="'+esc(s.username)+'">🔑 تغییر رمز</button>'+
-      '<button class="btn btn-danger-o btn-sm" data-sdel="'+s.id+'">🗑 حذف</button>'+
-    '</div></td></tr>').join('')||'<tr><td colspan="4" class="center" style="padding:26px">هنوز حسابی نساخته‌ای.</td></tr>')+
-  '</table></div>';
-  $('#addStu').onsubmit=async ev=>{
-    ev.preventDefault();
-    const name=$('#s-name').value.trim(),user=$('#s-user').value.trim().toLowerCase(),pass=$('#s-pass').value;
-    if(!/^[a-z0-9._-]{3,}$/.test(user))return toast('نام کاربری: حداقل ۳ حرف انگلیسی/عدد','err');
-    if(pass.length<4)return toast('رمز حداقل ۴ حرف باشد','err');
-    if(user===ADMIN_USER.toLowerCase())return toast('این نام کاربری رزرو شده','err');
-    const dup=await db.collection('students').where('username','==',user).get();
-    if(!dup.empty)return toast('این نام کاربری قبلاً ثبت شده','err');
-    await db.collection('students').doc(uid(10)).set({name,username:user,pass:await sha(pass),createdAt:Date.now()});
-    toast('حساب ساخته شد ✓');
-    const ov=openModal('<h3 class="disp">اطلاعات ورود ✅</h3><p>این را برای دانش‌آموز بفرست:</p>'+
-      '<pre class="creds" dir="ltr">نام کاربری: '+user+'\nرمز عبور: '+pass+'\nآدرس سایت: '+location.origin+location.pathname+'</pre>'+
-      '<div class="m-actions"><button class="btn btn-primary" id="cc">📋 کپی</button><button class="btn btn-ghost" id="cx">بستن</button></div>');
-    ov.querySelector('#cc').onclick=()=>copyText('نام کاربری: '+user+'\nرمز عبور: '+pass+'\nآدرس سایت: '+location.origin+location.pathname);
-    ov.querySelector('#cx').onclick=closeModal;
-    route();
-  };
-  box.querySelectorAll('[data-pass]').forEach(b=>b.onclick=()=>promptBox('تغییر رمز «'+b.dataset.name+'»','رمز جدید (حداقل ۴ حرف)',async v=>{
-    if(v.length<4)return toast('رمز کوتاه است','err');
-    await db.collection('students').doc(b.dataset.pass).update({pass:await sha(v)});
-    toast('رمز تغییر کرد ✓');
-    const ov=openModal('<h3 class="disp">رمز جدید ✅</h3><pre class="creds" dir="ltr">نام کاربری: '+b.dataset.user+'\nرمز عبور: '+v+'</pre>'+
-      '<div class="m-actions"><button class="btn btn-primary" id="cc2">📋 کپی</button><button class="btn btn-ghost" id="cx2">بستن</button></div>');
-    ov.querySelector('#cc2').onclick=()=>copyText('نام کاربری: '+b.dataset.user+'\nرمز عبور: '+v);
-    ov.querySelector('#cx2').onclick=closeModal;
-  }));
-  box.querySelectorAll('[data-sdel]').forEach(b=>b.onclick=()=>confirmBox('حساب این دانش‌آموز حذف می‌شود.',async()=>{
-    await db.collection('students').doc(b.dataset.sdel).delete();toast('حذف شد');route();
-  }));
-}
-
-/* ── نتایج ── */
-async function adminResults(){
-  const box=$('#adminContent');
-  const [examsSnap,resSnap]=await Promise.all([
-    db.collection('exams').get(),
-    db.collection('results').where('status','==','done').get()
-  ]);
-  const exams={};examsSnap.forEach(d=>exams[d.id]=d.data().title);
-  const all=[];resSnap.forEach(d=>all.push({id:d.id,...d.data()}));
-  all.sort((a,b)=>(b.finishedAt||0)-(a.finishedAt||0));
-  box.innerHTML=
-  '<div class="toolbar"><h2 class="disp">نتایج آزمون‌ها</h2>'+
-    '<select class="inp sel-w" id="rFilter"><option value="">همهٔ آزمون‌ها</option>'+
-    Object.entries(exams).map(([id,t])=>'<option value="'+id+'">'+esc(t)+'</option>').join('')+'</select></div>'+
-  '<div id="rBody"></div>';
-  const render=fid=>{
-    const rows=all.filter(r=>!fid||r.examId===fid);
-    const n=rows.length,avg=n?Math.round(rows.reduce((s,r)=>s+r.percent,0)/n):0,best=n?Math.max(...rows.map(r=>r.percent)):0;
-    $('#rBody').innerHTML=
-    '<div class="stats-row">'+statCard('شرکت‌کننده',fa(n))+statCard('میانگین',n?fa(avg)+'٪':'—')+statCard('بهترین',n?fa(best)+'٪':'—')+'</div>'+
-    '<div class="card pad table-wrap"><table class="tbl"><tr><th>تاریخ</th><th>دانش‌آموز</th><th>آزمون</th><th>درصد</th><th>صحیح</th><th>غلط</th><th>بی‌پاسخ</th><th></th></tr>'+
-    (rows.map(r=>'<tr><td>'+fmtDate(r.finishedAt)+'</td><td>'+esc(r.studentName)+'</td><td>'+esc(r.examTitle||exams[r.examId]||'—')+'</td>'+
-      '<td><span class="chip '+(r.percent>=80?'g':r.percent>=50?'y':'r')+'">'+fa(r.percent)+'٪</span></td>'+
-      '<td>'+fa(r.correct)+'</td><td>'+fa(r.wrong)+'</td><td>'+fa(r.blank)+'</td>'+
-      '<td><div class="row-actions"><button class="btn btn-ghost btn-sm" data-det="'+r.id+'">جزئیات</button>'+
-      '<button class="btn btn-danger-o btn-sm" data-rdel="'+r.id+'" title="حذف = امکان شرکت مجدد">حذف</button></div></td></tr>').join('')||
-      '<tr><td colspan="8" class="center" style="padding:26px">نتیجه‌ای ثبت نشده.</td></tr>')+
+async function adminStudents() {
+  const box = $('#adminContent');
+  const data = await api('/api/students');
+  const students = data.students;
+  box.innerHTML =
+    '<div class="toolbar"><h2 class="disp">دانش‌آموزان</h2></div>' +
+    '<form class="card pad form-grid" id="addStu">' +
+    '<div><label class="lbl">نام</label><input class="inp" id="s-name" required></div>' +
+    '<div><label class="lbl">نام کاربری (انگلیسی)</label><input class="inp" id="s-user" dir="ltr" required placeholder="ali.m"></div>' +
+    '<div><label class="lbl">رمز</label><input class="inp" id="s-pass" dir="ltr" required></div>' +
+    '<div><button class="btn btn-primary">➕ ساخت</button></div>' +
+    '</form>' +
+    '<div class="card pad table-wrap"><table class="tbl"><tr><th>نام</th><th>نام کاربری</th><th>ساخته‌شده</th><th>عملیات</th></tr>' +
+    (students.map(s => '<tr><td>' + esc(s.name) + '</td><td dir="ltr">' + esc(s.username) + '</td><td>' + fmtDate(s.createdAt) + '</td>' +
+      '<td><div class="row-actions">' +
+      '<button class="btn btn-ghost btn-sm" data-pass="' + s.username + '" data-name="' + esc(s.name) + '">🔑 تغییر رمز</button>' +
+      '<button class="btn btn-danger-o btn-sm" data-sdel="' + s.username + '">🗑 حذف</button>' +
+      '</div></td></tr>').join('') || '<tr><td colspan="4" class="center" style="padding:26px">هنوز حسابی نساخته‌ای.</td></tr>') +
     '</table></div>';
-    $('#rBody').querySelectorAll('[data-det]').forEach(b=>b.onclick=async()=>{
-      const r=all.find(x=>x.id===b.dataset.det);let body='';
-      const ex=await db.collection('exams').doc(r.examId).get();
-      if(ex.exists){
-        const qs=ex.data().questions;
-        body=qs.map((q,i)=>{
-          const a=(r.answers||[])[i]||0;
-          const st=a===0?'⚪ بی‌پاسخ':(a===q.correct?'🟢 صحیح':'🔴 غلط');
-          return '<div class="det-row"><b>سؤال '+fa(i+1)+'</b><span>'+st+'</span><span style="margin-right:auto">انتخاب: '+(a?fa(a):'—')+' · صحیح: '+fa(q.correct)+'</span></div>';
+  $('#addStu').onsubmit = async ev => {
+    ev.preventDefault();
+    const name = $('#s-name').value.trim(), user = $('#s-user').value.trim(), pass = $('#s-pass').value;
+    try {
+      await api('/api/student', { method: 'POST', body: JSON.stringify({ name, username: user, password: pass }) });
+      toast('حساب ساخته شد ✓');
+      const ov = openModal('<h3 class="disp">اطلاعات ورود ✅</h3><p>این را برای دانش‌آموز بفرست:</p>' +
+        '<pre class="creds" dir="ltr">نام کاربری: ' + user + '\nرمز عبور: ' + pass + '\nآدرس سایت: ' + location.origin + location.pathname + '</pre>' +
+        '<div class="m-actions"><button class="btn btn-primary" id="cc">📋 کپی</button><button class="btn btn-ghost" id="cx">بستن</button></div>');
+      ov.querySelector('#cc').onclick = () => copyText('نام کاربری: ' + user + '\nرمز عبور: ' + pass + '\nآدرس سایت: ' + location.origin + location.pathname);
+      ov.querySelector('#cx').onclick = closeModal;
+      route();
+    } catch (err) { toast(err.message, 'err'); }
+  };
+  box.querySelectorAll('[data-pass]').forEach(b => b.onclick = () => promptBox('تغییر رمز «' + b.dataset.name + '»', 'رمز جدید', async v => {
+    try {
+      await api('/api/student/' + b.dataset.pass + '/password', { method: 'PUT', body: JSON.stringify({ password: v }) });
+      toast('رمز تغییر کرد ✓');
+      const ov = openModal('<h3 class="disp">رمز جدید ✅</h3><pre class="creds" dir="ltr">نام کاربری: ' + b.dataset.pass + '\nرمز عبور: ' + v + '</pre>' +
+        '<div class="m-actions"><button class="btn btn-primary" id="cc2">📋 کپی</button><button class="btn btn-ghost" id="cx2">بستن</button></div>');
+      ov.querySelector('#cc2').onclick = () => copyText('نام کاربری: ' + b.dataset.pass + '\nرمز عبور: ' + v);
+      ov.querySelector('#cx2').onclick = closeModal;
+    } catch (err) { toast(err.message, 'err'); }
+  }));
+  box.querySelectorAll('[data-sdel]').forEach(b => b.onclick = () => confirmBox('حذف حساب؟', async () => {
+    await api('/api/student/' + b.dataset.sdel, { method: 'DELETE' }); toast('حذف شد'); route();
+  }));
+}
+
+async function adminResults() {
+  const box = $('#adminContent');
+  const [exData, resData] = await Promise.all([api('/api/exams'), api('/api/results')]);
+  const exams = {}; exData.exams.forEach(e => exams[e.id] = e.title);
+  const all = resData.results.filter(r => r.status === 'done');
+  all.sort((a, b) => (b.finishedAt || 0) - (a.finishedAt || 0));
+  box.innerHTML =
+    '<div class="toolbar"><h2 class="disp">نتایج</h2>' +
+    '<select class="inp sel-w" id="rFilter"><option value="">همه</option>' +
+    Object.entries(exams).map(([id, t]) => '<option value="' + id + '">' + esc(t) + '</option>').join('') + '</select></div>' +
+    '<div id="rBody"></div>';
+  const render = fid => {
+    const rows = all.filter(r => !fid || r.examId === fid);
+    const n = rows.length, avg = n ? Math.round(rows.reduce((s, r) => s + r.percent, 0) / n) : 0, best = n ? Math.max(...rows.map(r => r.percent)) : 0;
+    $('#rBody').innerHTML =
+      '<div class="stats-row">' + statCard('شرکت‌کننده', fa(n)) + statCard('میانگین', n ? fa(avg) + '٪' : '—') + statCard('بهترین', n ? fa(best) + '٪' : '—') + '</div>' +
+      '<div class="card pad table-wrap"><table class="tbl"><tr><th>تاریخ</th><th>دانش‌آموز</th><th>آزمون</th><th>درصد</th><th>صحیح</th><th>غلط</th><th>بی‌پاسخ</th><th></th></tr>' +
+      (rows.map(r => '<tr><td>' + fmtDate(r.finishedAt) + '</td><td>' + esc(r.studentName) + '</td><td>' + esc(r.examTitle || exams[r.examId] || '—') + '</td>' +
+        '<td><span class="chip ' + (r.percent >= 80 ? 'g' : r.percent >= 50 ? 'y' : 'r') + '">' + fa(r.percent) + '٪</span></td>' +
+        '<td>' + fa(r.correct) + '</td><td>' + fa(r.wrong) + '</td><td>' + fa(r.blank) + '</td>' +
+        '<td><div class="row-actions"><button class="btn btn-ghost btn-sm" data-det="' + r.id + '">جزئیات</button>' +
+        '<button class="btn btn-danger-o btn-sm" data-rdel="' + r.id + '">حذف</button></div></td></tr>').join('') ||
+        '<tr><td colspan="8" class="center" style="padding:26px">نتیجه‌ای ثبت نشده.</td></tr>') +
+      '</table></div>';
+    $('#rBody').querySelectorAll('[data-det]').forEach(b => b.onclick = async () => {
+      const r = all.find(x => x.id === b.dataset.det); let body = '';
+      try {
+        const d = await api('/api/exam/' + r.examId);
+        const qs = d.exam.questions;
+        body = qs.map((q, i) => {
+          const a = (r.answers || [])[i] || 0;
+          const st = a === 0 ? '⚪ بی‌پاسخ' : (a === q.correct ? '🟢 صحیح' : '🔴 غلط');
+          return '<div class="det-row"><b>سؤال ' + fa(i + 1) + '</b><span>' + st + '</span><span style="margin-right:auto">انتخاب: ' + (a ? fa(a) : '—') + ' · صحیح: ' + fa(q.correct) + '</span></div>';
         }).join('');
-      }else body='<p>آزمون حذف شده.</p>';
-      const ov=openModal('<h3 class="disp">'+esc(r.studentName)+' — '+esc(r.examTitle)+'</h3><p class="m-msg">درصد: <b>'+fa(r.percent)+'٪</b> ('+fa(r.correct)+' صحیح، '+fa(r.wrong)+' غلط، '+fa(r.blank)+' بی‌پاسخ)</p>'+body+
+      } catch { body = '<p>آزمون حذف شده.</p>'; }
+      const ov = openModal('<h3 class="disp">' + esc(r.studentName) + ' — ' + esc(r.examTitle) + '</h3><p class="m-msg">درصد: <b>' + fa(r.percent) + '٪</b> (' + fa(r.correct) + ' صحیح، ' + fa(r.wrong) + ' غلط، ' + fa(r.blank) + ' بی‌پاسخ)</p>' + body +
         '<div class="m-actions"><button class="btn btn-ghost" id="dc">بستن</button></div>');
-      ov.querySelector('#dc').onclick=closeModal;
+      ov.querySelector('#dc').onclick = closeModal;
     });
-    $('#rBody').querySelectorAll('[data-rdel]').forEach(b=>b.onclick=()=>confirmBox('با حذف، دانش‌آموز می‌تواند دوباره شرکت کند.',async()=>{
-      await db.collection('results').doc(b.dataset.rdel).delete();toast('حذف شد');render($('#rFilter').value);
+    $('#rBody').querySelectorAll('[data-rdel]').forEach(b => b.onclick = () => confirmBox('حذف نتیجه؟', async () => {
+      await api('/api/result/' + b.dataset.rdel, { method: 'DELETE' }); toast('حذف شد'); render($('#rFilter').value);
     }));
   };
-  $('#rFilter').onchange=e=>render(e.target.value);
+  $('#rFilter').onchange = e => render(e.target.value);
   render('');
 }
 
-/* ── تنظیمات ── */
-function adminSettings(){
-  $('#adminContent').innerHTML='<div class="card pad narrow-card fade-up">'+
-    '<h2 class="disp" style="font-size:28px">تنظیمات</h2>'+
-    '<p style="margin:10px 0">نام کاربری مدیر: <b dir="ltr">'+esc(ADMIN_USER)+'</b></p>'+
-    '<label class="lbl">رمز جدید مدیر</label><input class="inp" id="np" type="password" dir="ltr">'+
-    '<button class="btn btn-primary" id="npb" style="margin-top:14px">💾 ذخیرهٔ رمز جدید</button>'+
-    '<hr class="sep"><p class="hint">اگر رمز را فراموش کردی، از کنسول Firebase سند settings/admin را حذف کن.</p>'+
-  '</div>';
-  $('#npb').onclick=async()=>{
-    const v=$('#np').value;
-    if(v.length<5)return toast('رمز حداقل ۵ حرف باشد','err');
-    await db.collection('settings').doc('admin').set({user:ADMIN_USER.toLowerCase(),pass:await sha(v)});
-    toast('رمز مدیر تغییر کرد ✓');$('#np').value='';
+function adminSettings() {
+  $('#adminContent').innerHTML = '<div class="card pad narrow-card fade-up">' +
+    '<h2 class="disp" style="font-size:28px">تنظیمات</h2>' +
+    '<p style="margin:10px 0">نام کاربری مدیر: <b dir="ltr">pouria</b></p>' +
+    '<label class="lbl">رمز جدید مدیر</label><input class="inp" id="np" type="password" dir="ltr">' +
+    '<button class="btn btn-primary" id="npb" style="margin-top:14px">💾 ذخیرهٔ رمز جدید</button>' +
+    '<hr class="sep"><p class="hint">اگر رمز را فراموش کردی، در کد Worker مقدار ADMIN_PASS را موقتاً عوض کن.</p>' +
+    '</div>';
+  $('#npb').onclick = async () => {
+    const v = $('#np').value;
+    if (v.length < 5) return toast('رمز حداقل ۵ حرف', 'err');
+    await api('/api/admin/password', { method: 'PUT', body: JSON.stringify({ password: v }) });
+    toast('رمز تغییر کرد ✓'); $('#np').value = '';
   };
 }
 
-/* ── عمومی ── */
-document.addEventListener('click',e=>{
-  if(e.target.closest('#logoutBtn')){setSession(null);location.hash='#/login';return;}
-  const img=e.target.closest('.qimg');
-  if(img){const ov=openModal('<img class="lb-img" src="'+img.src+'">');ov.onclick=closeModal;}
+document.addEventListener('click', e => {
+  if (e.target.closest('#logoutBtn')) { setSession(null); location.hash = '#/login'; return; }
+  const img = e.target.closest('.qimg');
+  if (img) { const ov = openModal('<img class="lb-img" src="' + img.src + '">'); ov.onclick = closeModal; }
 });
-(function bg(){
-  const box=document.getElementById('bg-syms');if(!box)return;
-  const glyphs=['∑','π','√','∞','∫','≈','Δ','θ','٪','×','÷','≠','∠','ƒ'];
-  for(let i=0;i<16;i++){
-    const s=document.createElement('span');
-    s.textContent=glyphs[i%glyphs.length];
-    s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';
-    s.style.fontSize=(26+Math.random()*70)+'px';
-    s.style.animationDuration=(7+Math.random()*8)+'s';
-    s.style.animationDelay=(-Math.random()*8)+'s';
+(function bg() {
+  const box = document.getElementById('bg-syms'); if (!box) return;
+  const glyphs = ['∑', 'π', '√', '∞', '∫', '≈', 'Δ', 'θ', '٪', '×', '÷', '≠', '∠', 'ƒ'];
+  for (let i = 0; i < 16; i++) {
+    const s = document.createElement('span');
+    s.textContent = glyphs[i % glyphs.length];
+    s.style.left = Math.random() * 100 + '%'; s.style.top = Math.random() * 100 + '%';
+    s.style.fontSize = (26 + Math.random() * 70) + 'px';
+    s.style.animationDuration = (7 + Math.random() * 8) + 's';
+    s.style.animationDelay = (-Math.random() * 8) + 's';
     box.appendChild(s);
   }
 })();
 
-/* ── شروع ── */
-window._bootTimer=setTimeout(()=>{
-  if(appEl.innerHTML.includes('در حال بارگذاری')){
-    appEl.innerHTML='<div class="wrap narrow"><div class="card pad center fade-up" style="margin-top:44px">'+
-      '<p class="big-msg">⏳ ارتباط با سرور طول کشید<br><small>اینترنت یا فیلترشکن را چک کن</small></p>'+
-      '<button class="btn btn-primary" onclick="location.reload()">🔄 تلاش دوباره</button></div></div>';
-  }
-},25000);
-
-if(typeof firebase==='undefined'){
-  clearTimeout(window._bootTimer);
-  appEl.innerHTML='<div class="wrap narrow"><div class="card pad center fade-up" style="margin-top:44px">'+
-    '<h1 class="disp" style="font-size:30px">⚠️ کتابخانهٔ Firebase بارگذاری نشد</h1>'+
-    '<p style="line-height:2.2;margin:14px 0">سرور CDN در دسترس نیست.<br>اینترنت را چک کن و صفحه را رفرش کن.</p>'+
-    '<button class="btn btn-primary" onclick="location.reload()">🔄 تلاش دوباره</button></div></div>';
-}else if(NOT_SET){
-  clearTimeout(window._bootTimer);
-  appEl.innerHTML='<div class="wrap narrow"><div class="card pad fade-up" style="margin-top:44px">'+
-    '<h1 class="disp" style="font-size:32px">⚙️ یک قدم تا راه‌اندازی</h1>'+
-    '<p style="line-height:2.2;margin:10px 0">تنظیمات Firebase را در ابتدای فایل پر کن.</p></div></div>';
-}else{
-  try{
-    firebase.initializeApp(firebaseConfig);
-    db=firebase.firestore();
-    window.addEventListener('hashchange',route);
-    route();
-  }catch(e){
-    clearTimeout(window._bootTimer);
-    console.error(e);
-    appEl.innerHTML='<div class="wrap narrow"><div class="card pad center fade-up" style="margin-top:44px">'+
-      '<p class="big-msg">خطا در اتصال به Firebase 🔥<br><small>تنظیمات firebaseConfig را چک کن</small></p>'+
-      '<button class="btn btn-primary" onclick="location.reload()">🔄 تلاش دوباره</button></div></div>';
-  }
-}
+window.addEventListener('hashchange', route);
+route();
 </script>
 </body>
 </html>
