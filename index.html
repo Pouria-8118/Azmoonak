@@ -363,7 +363,10 @@ async function route() {
     if (seg[0] === 'mistakes') return await viewMistakes();
     if (seg[0] === 'exam') return await viewExam(seg[1]);
     if (seg[0] === 'result') return await viewResult(seg[1]);
-    if (seg[0] === 'admin') return await viewAdmin(seg);
+    if (seg[0] === 'admin') {
+      if (seg[1] === 'result' && seg[2]) return await adminViewResult(seg[2]);
+      return await viewAdmin(seg);
+    }
     location.hash = '#/';
   } catch (err) {
     console.error(err);
@@ -712,6 +715,75 @@ async function viewResult(resId) {
   requestAnimationFrame(() => requestAnimationFrame(() => { const g = $('#gval'); if (g) g.style.strokeDashoffset = (C * (1 - r.percent / 100)).toFixed(1); }));
 }
 
+/* ── کارنامهٔ کامل برای مدیر ── */
+async function adminViewResult(resId) {
+  if (!session || session.role !== 'admin') { location.hash = '#/login?next=%23%2Fadmin'; return; }
+  let r;
+  try {
+    const data = await api('/api/result/' + resId);
+    r = data.result;
+  } catch { messagePage('کارنامه پیدا نشد.'); return; }
+  if (r.status !== 'done') { messagePage('این آزمون هنوز تمام نشده.'); return; }
+  let exam = null;
+  try {
+    const d = await api('/api/exam/' + r.examId);
+    exam = d.exam;
+  } catch { }
+
+  const color = r.percent >= 80 ? 'var(--ok)' : r.percent >= 50 ? 'var(--amber)' : r.percent >= 0 ? 'var(--pen)' : '#7c1d1d';
+  const msg = r.percent >= 85 ? 'عملکرد عالی 🎉' : r.percent >= 60 ? 'عملکرد خوب 👍' : r.percent >= 35 ? 'نیاز به تلاش بیشتر 💪' : r.percent >= 0 ? 'نیاز به مرور مباحث 📚' : 'نمرهٔ منفی به دلیل پاسخ‌های غلط زیاد';
+  const negNote = r.percent < 0 ? '<div style="background:#fee;border:1.5px solid var(--pen);border-radius:10px;padding:10px 14px;margin-top:12px;font-size:13px;color:#7c1d1d;line-height:1.9">⚠️ <b>نمرهٔ منفی:</b> به دلیل تعداد پاسخ‌های غلط زیاد، نمرهٔ این دانش‌آموز کمتر از صفر شده.</div>' : '';
+
+  const C = (2 * Math.PI * 62).toFixed(1);
+  const adminTop = '<header class="topbar"><div class="inner">' +
+    '<span class="logo"><span class="tick">√</span> آزمونک · پنل مدیر</span>' +
+    '<span class="spacer"></span>' +
+    '<a class="tab" href="#/admin/results">📊 بازگشت به نتایج</a>' +
+    '<a class="tab" href="#/admin">🏠 پنل اصلی</a>' +
+    '</div></header>';
+
+  let html = adminTop + '<div id="resultTop"></div><div class="wrap narrow">' +
+    '<div class="card pad" style="margin-top:18px;background:#eef5ff;border:1.5px solid var(--ink)">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">' +
+    '<div><span style="font-size:12px;font-weight:700;color:var(--ink-2)">👤 کارنامهٔ دانش‌آموز:</span>' +
+    '<h3 class="disp" style="font-size:24px">' + esc(r.studentName) + '</h3></div>' +
+    '<a class="btn btn-ghost btn-sm" href="#/admin/results">← بازگشت به نتایج</a>' +
+    '</div></div>' +
+    '<div class="card pad result-head fade-up">' +
+    '<div class="gauge"><svg width="170" height="170" viewBox="0 0 170 170">' +
+    '<circle cx="85" cy="85" r="62" fill="none" stroke="#ece7d8" stroke-width="13"/>' +
+    '<circle id="gval" cx="85" cy="85" r="62" fill="none" stroke="' + color + '" stroke-width="13" stroke-linecap="round" stroke-dasharray="' + C + '" stroke-dashoffset="' + C + '" style="transition:stroke-dashoffset 1.3s"/>' +
+    '</svg><div class="val">' + fa(r.percent) + '٪</div></div>' +
+    '<div class="r-text"><span class="intro-tag">کارنامهٔ آزمون</span>' +
+    '<h2 class="disp">' + esc(r.examTitle) + '</h2><p class="r-msg">' + msg + '</p>' +
+    '<div class="r-stats"><span class="chip g">✔ صحیح ' + fa(r.correct) + '</span><span class="chip r">✘ غلط ' + fa(r.wrong) + '</span><span class="chip b">⚪ بی‌پاسخ ' + fa(r.blank) + '</span><span class="chip y">⏱ ' + fmtDur(r.finishedAt - r.startedAt) + '</span></div>' +
+    negNote +
+    '</div>' +
+    '</div>';
+  if (exam && exam.videoUrl) html += '<div class="card pad fade-up"><h2 class="disp sec-title">🎬 پاسخ ویدئویی</h2>' + videoEmbed(exam.videoUrl) + '</div>';
+  if (exam) {
+    html += '<h2 class="disp sec-title">🗝 کلید و پاسخ‌نامه</h2>' + exam.questions.map((q, i) => {
+      const a = (r.answers || [])[i] || 0;
+      const st = a === 0 ? ['b', '⚪ بی‌پاسخ'] : a === q.correct ? ['g', '✔ صحیح'] : ['r', '✘ غلط'];
+      return '<div class="card pad q-card fade-up">' +
+        '<div class="q-head"><span class="q-num">سؤال ' + fa(i + 1) + '</span><span class="chip ' + st[0] + '">' + st[1] + '</span></div>' +
+        '<img class="qimg" src="' + q.img + '" loading="lazy" onerror="this.style.display=\'none\'">' +
+        '<div class="opts">' + [1, 2, 3, 4].map(o => {
+          let cls = '', tag = '';
+          if (o === q.correct) { cls = 'good'; tag = '<span class="tag t-ok">' + (a === o ? 'انتخاب دانش‌آموز ✓' : 'پاسخ صحیح') + '</span>'; }
+          else if (o === a) { cls = 'bad'; tag = '<span class="tag t-bad">انتخاب دانش‌آموز</span>'; }
+          return '<div class="opt ro ' + cls + '"><span class="n">' + fa(o) + '</span><span>گزینهٔ ' + fa(o) + '</span>' + tag + '</div>';
+        }).join('') + '</div></div>';
+    }).join('');
+  } else html += '<div class="card pad" style="margin-top:16px">آزمون حذف شده؛ سؤالات در دسترس نیست.</div>';
+  html += '<div class="center" style="margin:26px 0"><a class="btn btn-primary" href="#/admin/results">بازگشت به نتایج</a></div></div>';
+  appEl.innerHTML = html;
+  const topEl = document.getElementById('resultTop');
+  if (topEl) topEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+  window.scrollTo({ top: 0, behavior: 'auto' });
+  requestAnimationFrame(() => requestAnimationFrame(() => { const g = $('#gval'); if (g) g.style.strokeDashoffset = (C * (1 - r.percent / 100)).toFixed(1); }));
+}
+
 /* ── صفحهٔ مرور اشتباهات ── */
 async function viewMistakes() {
   if (!session || session.role !== 'student') { location.hash = '#/login'; return; }
@@ -1028,20 +1100,8 @@ async function adminResults() {
         '<button class="btn btn-danger-o btn-sm" data-rdel="' + r.id + '">حذف</button></div></td></tr>').join('') ||
         '<tr><td colspan="8" class="center" style="padding:26px">نتیجه‌ای ثبت نشده.</td></tr>') +
       '</table></div>';
-    $('#rBody').querySelectorAll('[data-det]').forEach(b => b.onclick = async () => {
-      const r = all.find(x => x.id === b.dataset.det); let body = '';
-      try {
-        const d = await api('/api/exam/' + r.examId);
-        const qs = d.exam.questions;
-        body = qs.map((q, i) => {
-          const a = (r.answers || [])[i] || 0;
-          const st = a === 0 ? '⚪ بی‌پاسخ' : (a === q.correct ? '🟢 صحیح' : '🔴 غلط');
-          return '<div class="det-row"><b>سؤال ' + fa(i + 1) + '</b><span>' + st + '</span><span style="margin-right:auto">انتخاب: ' + (a ? fa(a) : '—') + ' · صحیح: ' + fa(q.correct) + '</span></div>';
-        }).join('');
-      } catch { body = '<p>آزمون حذف شده.</p>'; }
-      const ov = openModal('<h3 class="disp">' + esc(r.studentName) + ' — ' + esc(r.examTitle) + '</h3><p class="m-msg">درصد: <b>' + fa(r.percent) + '٪</b> (' + fa(r.correct) + ' صحیح، ' + fa(r.wrong) + ' غلط، ' + fa(r.blank) + ' بی‌پاسخ)</p>' + body +
-        '<div class="m-actions"><button class="btn btn-ghost" id="dc">بستن</button></div>');
-      ov.querySelector('#dc').onclick = closeModal;
+    $('#rBody').querySelectorAll('[data-det]').forEach(b => b.onclick = () => {
+      location.hash = '#/admin/result/' + b.dataset.det;
     });
     $('#rBody').querySelectorAll('[data-rdel]').forEach(b => b.onclick = () => confirmBox('حذف نتیجه؟', async () => {
       await api('/api/result/' + b.dataset.rdel, { method: 'DELETE' }); toast('حذف شد'); render($('#rFilter').value);
