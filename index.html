@@ -304,7 +304,7 @@ async function api(path, opts = {}) {
   const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
   if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
   let res;
-  try { res = await fetch(API_URL + path, { ...opts, headers }); }
+  try { res = await fetch(API_URL + path, { ...opts, headers, cache: 'no-store', }); }
   catch (e) { throw new Error('ارتباط با سرور برقرار نشد.'); }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
