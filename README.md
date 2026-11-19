@@ -1,7 +1,3 @@
-
-### 1. `README.md`
-
-```markdown
 # 📝 Azmoonak
 
 > **A Modern Quiz Platform** — Real-time analytics, progress tracking, and comprehensive admin panel.
