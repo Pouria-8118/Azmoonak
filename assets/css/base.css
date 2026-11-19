@@ -1,0 +1,39 @@
+@font-face { font-family: 'Lalezar'; src: url('https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/lalezar/Lalezar-Regular.ttf') format('truetype'); font-display: swap; }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --paper: #f6f3ea;
+  --grid: rgba(43, 72, 140, .075);
+  --ink: #1c2b5e;
+  --ink-2: #33427e;
+  --line: #ddd6c4;
+  --pen: #d92c45;
+  --pen-soft: #fdeef0;
+  --ok: #178f56;
+  --ok-soft: #e4f5ec;
+  --amber: #d98a10;
+}
+
+html { scroll-behavior: smooth; }
+
+body { font-family: 'Vazirmatn', system-ui, sans-serif; color: var(--ink); min-height: 100vh; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 26px 26px; }
+
+a { color: var(--ink-2); }
+
+.disp { font-family: 'Lalezar', 'Vazirmatn', sans-serif; font-weight: 400; }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 26px 18px; }
+.wrap.narrow { max-width: 780px; }
+.center { text-align: center; }
+
+.margin-line { position: fixed; top: 0; bottom: 0; right: 34px; width: 2px; background: rgba(217, 44, 69, .16); pointer-events: none; z-index: 0; }
+#bg-syms { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+#bg-syms span { position: absolute; font-family: Lalezar; color: var(--ink); opacity: .05; animation: floaty 9s ease-in-out infinite alternate; }
+#app { position: relative; z-index: 1; }
+
+.fade-up { animation: fadeUp .5s cubic-bezier(.2, .7, .3, 1) both; }
+
+@keyframes floaty { from { transform: translateY(-14px) rotate(-6deg); } to { transform: translateY(16px) rotate(7deg); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
